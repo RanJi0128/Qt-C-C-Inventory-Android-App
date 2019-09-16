@@ -1,0 +1,5 @@
+QMainWindow { 
+  
+  background-image: url(assets:/mainmenu.jpg) 
+  
+  }

@@ -1,0 +1,156 @@
+MainWindow { 
+  
+  border-image: url(assets:/mainmenu.jpg) 0,0,0,0 stretch stretch ; 
+ 
+}
+
+UserManger { 
+  
+  border-image: url(assets:/login.png) 0,0,0,0 stretch stretch ; 
+ 
+}
+
+QLabel#title{
+   
+   font: bold italic 90px;
+   color: rgba(0, 0, 0, 0.6);
+    
+}
+QPushButton#loginBtn{
+   
+    color : #21be2b;
+    background-color: rgba(255, 255, 255, 0.8);
+    border-style: outset;
+    border-width: 2px;
+    border-radius: 80px;
+    border-color: beige;
+    font: bold 90px;
+    min-width: 10em;
+    padding: 6px;
+   
+}
+QPushButton#loginBtn:pressed {
+    color : #17a81a;
+    border-style: inset;
+}
+QLabel#taskLabel{
+   
+   font: bold italic 70px;
+   color: rgba(0, 0, 0, 0.4);
+  
+}
+
+QComboBox {
+
+    background-color: rgba(255, 255, 255, 0.8);
+    border-style: outset;
+    
+    border-radius: 40px;
+    border-color: beige;
+    padding-left: 60px;
+    color: "#21be2b";
+    font: bold 90px;
+    
+} 
+QComboBox QAbstractItemView {
+     
+  padding-left: 30px;
+  font: bold 90px;
+  background:transparent;
+
+}
+QComboBox:on {
+  
+  color: "#21be2b";
+  selection-background-color:  rgba(0, 179, 210,0.5);
+  border-radius: 20px;
+}
+QComboBox::down-arrow {
+    image: url(assets:/drop-arrow.png);
+    width: 50px;
+    height: 50px;
+}
+QComboBox::drop-down {
+  subcontrol-origin: padding;
+  subcontrol-position: top right;
+  width: 100px;
+  border-top-right-radius: 30px;
+  border-bottom-right-radius: 30px;
+  background:transparent;
+
+}
+
+
+QComboBox#userCtl {
+
+    border-radius: 20px;
+    border-color: beige;
+    padding-left: 60px;
+    color: "#000000";
+    font: bold 70px;
+    
+}
+QComboBox#userCtl QAbstractItemView {
+     
+  padding-left: 30px;
+  font: bold 60px;
+  background:transparent;
+
+}
+QComboBox#userCtl:on {
+  
+  color: "#000000";
+  
+}
+
+ QPushButton#controlBtn{
+   
+    color : #21be2b;
+    background-color: rgba(255, 255, 255, 0.8);
+    border-style: outset;
+    border-width: 2px;
+    border-radius: 60px;
+    border-color: beige;
+    font: bold 70px;
+    min-width: 5em;
+    padding: 6px;
+   
+}
+QPushButton#controlBtn:pressed {
+    color : #17a81a;
+    border-style: inset;
+}
+QLabel#userInfo{
+   
+   font: bold italic 60px;
+   color: #14428b
+
+}
+QLineEdit#inputEdit {
+
+  padding-left: 30px;
+  font: bold  60px;
+
+}
+QLabel#explain{
+   
+   font: bold italic 50px;
+   color: rgba(0, 0, 0, 0.6);
+    
+}
+QPushButton#confirmBtn{
+   
+    color : #14428b;
+    background-color: #e3edfb;
+    border-width: 5px;
+    border-radius: 50px;
+    border-color: #e3edfb;
+    font: bold 80px;
+    min-width: 3em;  
+}
+QPushButton#confirmBtn:pressed {
+    color : #8fd7f1;
+    border-style : solid;
+    border-width: 10px;
+    border-color: #8fd7f1;
+}
