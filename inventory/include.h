@@ -17,5 +17,16 @@
 #include <QToolButton>
 #include <QMessageBox>
 #include <android/log.h>
+#include <QtAndroidExtras>
+#include <QtAndroid>
+#include <QSqlQuery>
+#include <QTableView>
+#include <QTableWidget>
+#include <QTableWidgetItem>
+#include <QHeaderView>
+#include <QAbstractTableModel>
+#include <QAbstractItemView>
+#include <QDialog>
+#include <QTimer>
 
 #endif // INCLUDE_H

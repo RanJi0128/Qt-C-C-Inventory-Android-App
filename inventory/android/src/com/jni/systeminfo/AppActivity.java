@@ -21,10 +21,10 @@ public class AppActivity extends org.qtproject.qt5.android.bindings.QtActivity
     public static long DISCONNECT_TIMEOUT = 300000;// x min = x * 60 * 1000 ms
 
     public AppActivity()
-    {
+    {        
         BatteryLevelListener.Init(this);
 
-        //Log.i("Main", Integer.toString(logtim));
+        Log.i("Main", Long.toString(DISCONNECT_TIMEOUT));
     }
     public static void sysLogoffTime(int time) {
 

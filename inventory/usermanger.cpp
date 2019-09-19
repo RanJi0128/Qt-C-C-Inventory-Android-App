@@ -2,55 +2,71 @@
 #include "mainwindow.h"
 
 
-LineEdit::LineEdit(QWidget *parent)
+LineEdit::LineEdit(QPixmap pixmap,int flag,QWidget *parent)
     : QLineEdit(parent)
 {
-    hideButton = new QToolButton(this);
-    QPixmap pixmap("assets:/hide.png");
+    ctrlButton = new QToolButton(this);
     QPixmap scaled = pixmap.scaled( QSize(80, 80), Qt::KeepAspectRatio, Qt::SmoothTransformation );
-    hideButton->setIcon(QIcon(scaled));
-    hideButton->setIconSize(scaled.size());
-    hideButton->setStyleSheet("QToolButton { border: none; padding: 0px; }");
-    hideButton->hide();
-    connect(hideButton, SIGNAL(clicked()), this, SLOT(changeMode()));
+    ctrlButton->setIcon(QIcon(scaled));
+    ctrlButton->setIconSize(scaled.size());
+    ctrlButton->hide();
+    ctrlButton->setStyleSheet("QToolButton { border: none; padding: 0px; }");
+    connect(ctrlButton, SIGNAL(clicked()), this, SLOT(changeMode()));
 
     int frameWidth = style()->pixelMetric(QStyle::PM_DefaultFrameWidth);
-    setStyleSheet(QString("QLineEdit {border-radius: 20px;padding-left: 30px;padding-right: %1px; } ").arg(hideButton->sizeHint().width() + frameWidth + 1));
+    setStyleSheet(QString("QLineEdit {border-radius: 20px;padding-left: 30px;padding-right: %1px; }\
+                           QLineEdit:focus{border-width: 5px;border-style : solid; border-color: #fd8a15;}").arg(ctrlButton->sizeHint().width() + frameWidth + 1));
     QSize msz = minimumSizeHint();
-    setMinimumSize(qMax(msz.width(), hideButton->sizeHint().height() + frameWidth * 2 + 2),
-                   qMax(msz.height(), hideButton->sizeHint().height() + frameWidth * 2 + 2));
+    setMinimumSize(qMax(msz.width(), ctrlButton->sizeHint().height() + frameWidth * 2 + 2),
+                   qMax(msz.height(), ctrlButton->sizeHint().height() + frameWidth * 2 + 2));
 
     isHidden=true;
+    btFlag=flag;
+
+    connect(this, SIGNAL(textChanged(const QString&)), this, SLOT(updateCloseButton(const QString&)));
+
+
 }
 
 void LineEdit::resizeEvent(QResizeEvent *)
 {
 
 
-    QSize sz = hideButton->sizeHint();
+    QSize sz = ctrlButton->sizeHint();
     int frameWidth = style()->pixelMetric(QStyle::PM_DefaultFrameWidth);
-    hideButton->move(rect().right() - frameWidth - sz.width(),
+    ctrlButton->move(rect().right() - frameWidth - sz.width(),
                       (rect().bottom() + 1 - sz.height())/2);
+
+}
+void LineEdit::updateCloseButton(const QString& text)
+{
+    ctrlButton->setVisible(!text.isEmpty());
 }
 void LineEdit::changeMode()
 {
-    isHidden=!isHidden;
-
-    if(!isHidden)
+    if(btFlag==1)
     {
-        this->setEchoMode(QLineEdit::Normal);
-        QPixmap pixmap("assets:/unhide.png");
-        QPixmap scaled = pixmap.scaled( QSize(80, 80), Qt::KeepAspectRatio, Qt::SmoothTransformation );
-        hideButton->setIcon(QIcon(scaled));
+        isHidden=!isHidden;
 
+        if(!isHidden)
+        {
+            this->setEchoMode(QLineEdit::Normal);
+            QPixmap pixmap("assets:/unhide.png");
+            QPixmap scaled = pixmap.scaled( QSize(80, 80), Qt::KeepAspectRatio, Qt::SmoothTransformation );
+            ctrlButton->setIcon(QIcon(scaled));
+
+        }
+        else {
+
+            this->setEchoMode(QLineEdit::Password);
+            QPixmap pixmap("assets:/hide.png");
+            QPixmap scaled = pixmap.scaled( QSize(80, 80), Qt::KeepAspectRatio, Qt::SmoothTransformation );
+            ctrlButton->setIcon(QIcon(scaled));
+
+        }
     }
     else {
-
-        this->setEchoMode(QLineEdit::Password);
-        QPixmap pixmap("assets:/hide.png");
-        QPixmap scaled = pixmap.scaled( QSize(80, 80), Qt::KeepAspectRatio, Qt::SmoothTransformation );
-        hideButton->setIcon(QIcon(scaled));
-
+        clear();
     }
 }
 
@@ -61,11 +77,16 @@ UserManger::UserManger(QWidget *parent) : QMainWindow(parent)
     height = size.height();
     this->setGeometry(0,0,width,height);
 
+    table.clear();
+
+    m = static_cast<MainWindow*>(parent);
+
     interface();
 }
 
 void UserManger::interface()
 {
+
     titleLabel = new QLabel(this);
     titleLabel->setText("Login");
     titleLabel->setAlignment(Qt::AlignCenter);
@@ -86,20 +107,19 @@ void UserManger::interface()
     passwordLabel->move((width-passwordLabel->width())/2-width*27/100,height*37/100);
     passwordLabel->setObjectName("userInfo");
 
-    passwdEdit = new LineEdit(this);
+    QPixmap pixmap("assets:/hide.png");
+    passwdEdit = new LineEdit(pixmap,1,this);
     passwdEdit->setPlaceholderText("Password Input");
     passwdEdit->resize(width*50/100,height*6/100);
     passwdEdit->move((width-passwdEdit->width())/2+width*15/100,height*37/100);
     passwdEdit->setEchoMode(QLineEdit::Password);
-    passwdEdit->hideButton->show();
     passwdEdit->setObjectName("inputEdit");
 
     user_control= new MyComboBox(this);
     user_control->resize(width*50/100,height*6/100);
     user_control->move((width-user_control->width())/2+width*15/100,height*24/100);
     user_control->setObjectName("userCtl");
-    user_control->insertItem(1,"Inventory");
-    user_control->insertItem(2,"Consumption");
+    connect(user_control,SIGNAL(currentIndexChanged(int)),this,SLOT(moveFocus()));
 
     explainLabel = new QLabel(this);
     explainLabel->setText("Select an Operator from list.To enter the password.\n Click ok and start using program.");
@@ -122,11 +142,58 @@ void UserManger::interface()
     cancelBtn->setObjectName("confirmBtn");
     connect(cancelBtn,SIGNAL(clicked()),this,SLOT(close()));
 
+    getData();
+
+
 
 
 }
 void UserManger::userConfirm()
 {
 
-    QMessageBox::warning(this,"Input Error","UserName or Password Wrong!");
+    if(table.size() > 0)
+      {
+         QByteArray passwd;
+         passwd.append(passwdEdit->text());
+
+       int key = user_control->currentIndex();
+       if(table.at(key).at(1) == user_control->currentText() && table.at(key).at(2) == QString(QCryptographicHash::hash(passwd,QCryptographicHash::Md5).toHex()))
+         {
+              m->loginSuccess(table.at(key).at(0).toInt(),table.at(key).at(3).toInt());
+              this->close();
+
+         }
+       else {
+           QMessageBox::warning(this,"Input Error","UserName or Password Wrong!");
+       }
+      }
+    else {
+        return;
+    }
+
+}
+void UserManger::moveFocus()
+{
+    passwdEdit->setFocus();
+}
+void UserManger::getData()
+{
+
+    QSqlQuery query;
+    query.prepare("SELECT * FROM login;");
+    query.exec();
+    int count = 0;
+    while (query.next()) {
+
+       QString key = query.value(0).toString();
+       QString name = query.value(1).toString();
+       QString passwd = query.value(2).toString();
+       QString permission = query.value(3).toString();
+
+       table.append({key,name,passwd,permission});
+
+       user_control->insertItem(count,name);
+       count++;
+
+    }
 }

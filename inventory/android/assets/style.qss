@@ -1,3 +1,9 @@
+
+QMainWindow{
+
+  border-image: url(assets:/login.png) 0,0,0,0 stretch stretch ; 
+}
+
 MainWindow { 
   
   border-image: url(assets:/mainmenu.jpg) 0,0,0,0 stretch stretch ; 
@@ -12,20 +18,20 @@ UserManger {
 
 QLabel#title{
    
-   font: bold italic 90px;
+   font: bold italic 50px;
    color: rgba(0, 0, 0, 0.6);
     
 }
+
 QPushButton#loginBtn{
    
     color : #21be2b;
     background-color: rgba(255, 255, 255, 0.8);
     border-style: outset;
     border-width: 2px;
-    border-radius: 80px;
+    border-radius: 40px;
     border-color: beige;
-    font: bold 90px;
-    min-width: 10em;
+    font: bold 50px;
     padding: 6px;
    
 }
@@ -35,84 +41,89 @@ QPushButton#loginBtn:pressed {
 }
 QLabel#taskLabel{
    
-   font: bold italic 70px;
+   font: bold italic 50px;
    color: rgba(0, 0, 0, 0.4);
   
 }
 
-QComboBox {
-
-    background-color: rgba(255, 255, 255, 0.8);
-    border-style: outset;
-    
-    border-radius: 40px;
-    border-color: beige;
-    padding-left: 60px;
-    color: "#21be2b";
-    font: bold 90px;
-    
-} 
-QComboBox QAbstractItemView {
-     
-  padding-left: 30px;
-  font: bold 90px;
-  background:transparent;
-
-}
-QComboBox:on {
-  
-  color: "#21be2b";
-  selection-background-color:  rgba(0, 179, 210,0.5);
-  border-radius: 20px;
-}
 QComboBox::down-arrow {
     image: url(assets:/drop-arrow.png);
-    width: 50px;
-    height: 50px;
+    width: 30px;
+    height: 30px;
 }
 QComboBox::drop-down {
   subcontrol-origin: padding;
   subcontrol-position: top right;
-  width: 100px;
+  width: 60px;
   border-top-right-radius: 30px;
   border-bottom-right-radius: 30px;
   background:transparent;
 
 }
 
+QComboBox#taskCtrl {
+ 
+    background-color: rgba(255, 255, 255, 0.8);
+    border-style: outset;  
+    border-radius: 40px;
+    border-color: beige;
+    padding-left: 30px;
+    color: "#21be2b";
+    font: bold 50px; 
+    
+} 
+QComboBox#taskCtrl:disabled{
+  background-color: rgba(255, 255, 255, 0.3);
+}
+QComboBox#taskCtrl QAbstractItemView {
+     
+  padding-left: 30px;
+  font: bold 50px;
+  background:transparent;
+  height: 100px;
 
+}
+QComboBox#taskCtrl:on {
+  
+  color: "#21be2b";
+  selection-background-color:  rgba(0, 179, 210,0.5);
+  border-radius: 20px;
+}
 QComboBox#userCtl {
 
     border-radius: 20px;
     border-color: beige;
-    padding-left: 60px;
+    padding-left: 30px;
     color: "#000000";
-    font: bold 70px;
+    font: bold 50px;
     
 }
 QComboBox#userCtl QAbstractItemView {
      
   padding-left: 30px;
-  font: bold 60px;
+  font: bold 50px;
   background:transparent;
 
 }
 QComboBox#userCtl:on {
-  
+
+  selection-background-color:  rgba(0, 179, 210,0.5);
   color: "#000000";
   
 }
 
- QPushButton#controlBtn{
+QPushButton#controlBtn:disabled{
+  background-color: rgba(255, 255, 255, 0.3);
+}
+QPushButton#controlBtn{
    
     color : #21be2b;
     background-color: rgba(255, 255, 255, 0.8);
     border-style: outset;
     border-width: 2px;
-    border-radius: 60px;
+    border-radius: 30px;
     border-color: beige;
-    font: bold 70px;
-    min-width: 5em;
+    font: bold 50px;
     padding: 6px;
    
 }
@@ -122,19 +133,31 @@ QPushButton#controlBtn:pressed {
 }
 QLabel#userInfo{
    
-   font: bold italic 60px;
+   font: bold italic 30px;
    color: #14428b
 
 }
+QLineEdit:focus{
+  
+  border-width: 10px;
+  border-style : solid;
+  border-color: #fd8a15;
+
+}
+
 QLineEdit#inputEdit {
 
+  border-width: 5px;
+  border-radius: 20px;
+  border-style : solid;
+  border-color: #f1f1f1;
   padding-left: 30px;
-  font: bold  60px;
+  font: bold  30px;
 
 }
 QLabel#explain{
    
-   font: bold italic 50px;
+   font: bold italic 30px;
    color: rgba(0, 0, 0, 0.6);
     
 }
@@ -143,14 +166,113 @@ QPushButton#confirmBtn{
     color : #14428b;
     background-color: #e3edfb;
     border-width: 5px;
-    border-radius: 50px;
+    border-radius: 30px;
     border-color: #e3edfb;
-    font: bold 80px;
-    min-width: 3em;  
+    font: bold 40px;
+     
 }
 QPushButton#confirmBtn:pressed {
     color : #8fd7f1;
     border-style : solid;
     border-width: 10px;
     border-color: #8fd7f1;
+}
+
+QHeaderView { 
+  font: bold 45px;
+  text-align: center; 
+ }
+
+ QTableView{
+
+   font: bold 40px;
+   text-align: center; 
+ }
+
+QPushButton#taskCtrlBtn{
+   
+    color : #14428b;
+    background-color: #e3edfb;
+    border-width: 5px;
+    border-radius: 30px;
+    border-color: #e3edfb;
+    font: bold 30px; 
+}
+QPushButton#taskCtrlBtn:pressed {
+    color : #8fd7f1;
+    border-style : solid;
+    border-width: 10px;
+    border-color: #8fd7f1;
+}
+QPushButton#taskCtrlBtn:disabled{
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+QPushButton#keyboard{
+   
+    border-style: outset;
+    border-width: 3px;
+    border-color: #ff0000;
+ 
+}
+
+QTabBar::tab:selected{
+
+   color : #ff0000;
+
+}
+QTextEdit{
+  border-style: outset;
+  border-width: 3px;
+  border-color: #000000;
+  padding-top : 10px;
+  padding-left : 10px;
+}
+QProgressBar {
+  background-color: #19232D;
+  border: 3px solid #32414B;
+  color: #F0F0F0;
+  border-radius: 10px;
+  text-align: center;
+}
+QLabel#battery{
+
+}
+QLabel#advanced{
+
+  font: bold italic 30px;
+  color: rgba(0, 0, 0, 0.8);
+}
+
+QComboBox#timeCtl {
+ 
+ border-radius: 20px;
+ border-color: beige;
+ padding-left: 30px;
+ color: "#000000";
+ font: bold 35px; 
+     
+}
+QComboBox#timeCtl QAbstractItemView {
+     
+  padding-left: 30px;
+  font: bold 35px; 
+}
+QComboBox#timeCtl:on {
+  
+  selection-background-color:  rgba(0, 179, 210,0.5);
+  color: "#000000";
+  
+}
+QPushButton#exitCtrlBtn{
+   
+    color : #14428b;
+    background-color: #ff0000;
+    border-width: 5px;
+    border-radius: 30px;
+    border-color: #e3edfb;
+    font: bold 30px; 
+}
+QPushButton#exitCtrlBtn:disabled{
+  background-color: rgba(255, 0, 0, 0.3);
 }

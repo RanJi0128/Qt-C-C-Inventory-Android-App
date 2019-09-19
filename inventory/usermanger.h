@@ -2,33 +2,30 @@
 #define USERMANGER_H
 
 #include "include.h"
-
+#include <QCryptographicHash>
 
 class MyComboBox;
+class MainWindow;
 
 class LineEdit : public QLineEdit
 {
     Q_OBJECT
 
 public:
-    LineEdit(QWidget *parent = nullptr);
+    LineEdit(QPixmap pixmap,int flag,QWidget *parent = nullptr);
 
 protected:
     void resizeEvent(QResizeEvent *);
-    virtual void focusInEvent( QFocusEvent* )
-    {
-        QGuiApplication::inputMethod()->hide();
-    }
-
 
 public:
 
-    QToolButton *hideButton;
-    QPixmap pixmap;
+    QToolButton *ctrlButton;
     bool isHidden;
+    int btFlag;
 
 public slots:
 
+   void updateCloseButton(const QString &text);
    void changeMode();
 };
 
@@ -48,27 +45,22 @@ public:
     QPushButton *cancelBtn;
 
     QLabel *explainLabel;
+    QVector<QVector<QString>> table;
+
+    MainWindow *m;
 
     int width;
     int height;
 
     void interface();
+    void getData();
 
-    bool eventFilter(QObject *obj, QEvent *event)
-    {
-//        QByteArray ba = QString::number(event->type()).toLocal8Bit();
-//        const char *c_str2 = ba.data();
-//      __android_log_write(ANDROID_LOG_INFO,"call-------------->",c_str2);
 
-         QGuiApplication::inputMethod()->hide();
-           // standard event processing
-         return QObject::eventFilter(obj, event);
-
-    }
 signals:
 
 public slots:
     void userConfirm();
+    void moveFocus();
 };
 
 #endif // USERMANGER_H
