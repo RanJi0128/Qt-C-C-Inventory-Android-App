@@ -17,6 +17,8 @@ public:
     QPushButton *menuBtn;
     QPushButton *networkBtn;
 
+    QDomElement root;
+
     int width;
     int height;
 

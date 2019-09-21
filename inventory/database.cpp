@@ -2,7 +2,7 @@
 
 DataBase::DataBase(QObject *parent) : QObject(parent)
 {
-    m_dbState="ok";
+    m_dbState = 0;
 }
 DataBase::~DataBase()
 {
@@ -14,7 +14,7 @@ void DataBase::connectToDataBase()
 
     if(!dfile.exists()){
 
-        m_dbState = "No Database";
+        m_dbState = 1;
 
     } else {
 
@@ -37,11 +37,11 @@ void DataBase::openDataBase()
 
     if(db.open()){
 
-        m_dbState = "ok";
+        m_dbState = 0;
 
     } else {
 
-        m_dbState = "Open error Database";
+        m_dbState = 2;
     }
 }
 void DataBase::closeDataBase()

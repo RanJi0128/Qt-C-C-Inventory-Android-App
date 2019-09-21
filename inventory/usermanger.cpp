@@ -1,6 +1,6 @@
 #include "usermanger.h"
 #include "mainwindow.h"
-
+#include "extern.h"
 
 LineEdit::LineEdit(QPixmap pixmap,int flag,QWidget *parent)
     : QLineEdit(parent)
@@ -87,21 +87,23 @@ UserManger::UserManger(QWidget *parent) : QMainWindow(parent)
 void UserManger::interface()
 {
 
+    root = doc.documentElement().firstChildElement("UserManger");
+
     titleLabel = new QLabel(this);
-    titleLabel->setText("Login");
+    titleLabel->setText(root.firstChildElement("titleLabel").text());
     titleLabel->setAlignment(Qt::AlignCenter);
     titleLabel->setGeometry(0,height*11/100,width,height*6/100);
     titleLabel->setObjectName("title");
 
     usernameLabel = new QLabel(this);
-    usernameLabel->setText("Operator Name");
+    usernameLabel->setText(root.firstChildElement("usernameLabel").text());
     usernameLabel->setAlignment(Qt::AlignCenter);
     usernameLabel->resize(width*28/100,height*6/100);
     usernameLabel->move((width-usernameLabel->width())/2-width*27/100,height*24/100);
     usernameLabel->setObjectName("userInfo");
 
     passwordLabel = new QLabel(this);
-    passwordLabel->setText("Password");
+    passwordLabel->setText(root.firstChildElement("passwordLabel").text());
     passwordLabel->setAlignment(Qt::AlignCenter);
     passwordLabel->resize(width*29/100,height*6/100);
     passwordLabel->move((width-passwordLabel->width())/2-width*27/100,height*37/100);
@@ -109,7 +111,7 @@ void UserManger::interface()
 
     QPixmap pixmap("assets:/hide.png");
     passwdEdit = new LineEdit(pixmap,1,this);
-    passwdEdit->setPlaceholderText("Password Input");
+    passwdEdit->setPlaceholderText(root.firstChildElement("passwdEdit").text());
     passwdEdit->resize(width*50/100,height*6/100);
     passwdEdit->move((width-passwdEdit->width())/2+width*15/100,height*37/100);
     passwdEdit->setEchoMode(QLineEdit::Password);
@@ -122,7 +124,7 @@ void UserManger::interface()
     connect(user_control,SIGNAL(currentIndexChanged(int)),this,SLOT(moveFocus()));
 
     explainLabel = new QLabel(this);
-    explainLabel->setText("Select an Operator from list.To enter the password.\n Click ok and start using program.");
+    explainLabel->setText(root.firstChildElement("explainLabel_1").text()+"\n"+root.firstChildElement("explainLabel_2").text());
     explainLabel->setAlignment(Qt::AlignCenter);
     explainLabel->setGeometry(0,height*48/100,width,height*11/100);
     explainLabel->setObjectName("explain");
@@ -130,7 +132,7 @@ void UserManger::interface()
     okBtn = new QPushButton(this);
     okBtn->resize(width*27/100,height*7/100);
     okBtn->move((width-okBtn->width())/2-width*21/100,height*77/100);
-    okBtn->setText("OK");
+    okBtn->setText(root.firstChildElement("okBtn").text());
     okBtn->setObjectName("confirmBtn");
     connect(okBtn,SIGNAL(clicked()),this,SLOT(userConfirm()));
 
@@ -138,7 +140,7 @@ void UserManger::interface()
     cancelBtn = new QPushButton(this);
     cancelBtn->resize(width*27/100,height*7/100);
     cancelBtn->move((width-cancelBtn->width())/2+width*21/100,height*77/100);
-    cancelBtn->setText("Cancel");
+    cancelBtn->setText(root.firstChildElement("cancelBtn").text());
     cancelBtn->setObjectName("confirmBtn");
     connect(cancelBtn,SIGNAL(clicked()),this,SLOT(close()));
 
@@ -164,7 +166,7 @@ void UserManger::userConfirm()
 
          }
        else {
-           QMessageBox::warning(this,"Input Error","UserName or Password Wrong!");
+           QMessageBox::warning(this,root.firstChildElement("userErrorTitle").text(),root.firstChildElement("userErrorText").text());
        }
       }
     else {

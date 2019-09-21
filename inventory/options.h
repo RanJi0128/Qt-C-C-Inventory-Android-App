@@ -29,8 +29,10 @@ public:
     bool exitPermission;
 
     MainWindow *m;
+    QDomElement root;
 
     void interface();
+
 
 
 signals:
@@ -39,6 +41,7 @@ public slots:
     void winClose();
     void serverInfoUpdate();
     void appQuit();
+    void fullscreenMode(int);
 };
 
 #endif // OPTIONS_H

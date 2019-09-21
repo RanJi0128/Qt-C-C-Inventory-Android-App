@@ -1,4 +1,5 @@
 #include "generaloption.h"
+#include "extern.h"
 
 GeneralOption::GeneralOption(QWidget *parent) : QMainWindow(parent)
 {
@@ -11,10 +12,12 @@ GeneralOption::GeneralOption(QWidget *parent) : QMainWindow(parent)
 }
 void GeneralOption::interface()
 {
+    root = doc.documentElement().firstChildElement("GeneralOption");
+
     pageTitle = new QLabel(this);
     pageTitle->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     pageTitle->setAlignment(Qt::AlignHCenter);
-    pageTitle->setText("General");
+    pageTitle->setText(root.firstChildElement("pageTitle").text());
     pageTitle->setObjectName("title");
     pageTitle->setGeometry(0,height*11/100,width,height*6/100);
 
@@ -38,14 +41,14 @@ void GeneralOption::interface()
     menuBtn = new QPushButton(this);
     menuBtn->resize(width*27/100,height*7/100);
     menuBtn->move((width-menuBtn->width())/2-width*25/100,height*69/100);
-    menuBtn->setText("Menu");
+    menuBtn->setText(root.firstChildElement("menuBtn").text());
     menuBtn->setObjectName("taskCtrlBtn");
     connect(menuBtn,SIGNAL(clicked()),this,SLOT(menuShow()));
 
     networkBtn = new QPushButton(this);
     networkBtn->resize(width*29/100,height*7/100);
     networkBtn->move((width-networkBtn->width())/2+width*22/100,height*69/100);
-    networkBtn->setText("NetWork");
+    networkBtn->setText(root.firstChildElement("networkBtn").text());
     networkBtn->setObjectName("taskCtrlBtn");
     connect(networkBtn,SIGNAL(clicked()),this,SLOT(openNetworkSetting()));
 
@@ -56,7 +59,9 @@ void GeneralOption::batteryInfoShow(int batteryLevel,bool onCharge)
 {
 
     batteryBar->setValue(batteryLevel);
-    QString str ="Main Battery:%1 (On charging: %2)";
+    QString str_1 =root.firstChildElement("batteryLabel_1").text();
+    QString str_2 =root.firstChildElement("batteryLabel_2").text();
+    QString str =str_1+":%1 (" +str_2+ ":%2"+")";
     batteryLabel->setText(str.arg(batteryBar->text()).arg(onCharge ? "Yes" :"No" ));
 }
 void GeneralOption::sysInfoShow(QString sysInfo)

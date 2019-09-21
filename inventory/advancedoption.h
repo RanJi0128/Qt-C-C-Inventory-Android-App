@@ -19,11 +19,13 @@ public:
     LineEdit *netpathEdit;
     QPushButton *saveBtn,*menuBt,*exitBt;
 
+    QCheckBox *cb;
 
     int width;
     int height;
 
     MyComboBox *time_control;
+    QDomElement root;
 
     void interface();
 
@@ -31,10 +33,12 @@ signals:
     void winClose();
     void saveSignal();
     void appQuitSignal();
+    void fullScreenSignal(int);
 public slots:
     void saveSlot();
     void menuShow();
     void appQuit();
+    void fullChecked(int state);
 };
 
 #endif // ADVANCEDOPTION_H

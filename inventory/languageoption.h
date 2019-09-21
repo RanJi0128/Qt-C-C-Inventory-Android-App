@@ -9,6 +9,7 @@ public:
     explicit LanguageOption(QWidget *parent = nullptr);
 
     QLabel* pageTitle;
+    QDomElement root;
 
     int width;
     int height;

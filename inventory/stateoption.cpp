@@ -1,4 +1,5 @@
 #include "stateoption.h"
+#include "extern.h"
 
 StateOption::StateOption(QWidget *parent,int key) : QMainWindow(parent)
 {
@@ -11,10 +12,12 @@ StateOption::StateOption(QWidget *parent,int key) : QMainWindow(parent)
 }
 void StateOption::interface()
 {
+    root = doc.documentElement().firstChildElement("StateOption");
+
     pageTitle = new QLabel(this);
     pageTitle->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     pageTitle->setAlignment(Qt::AlignHCenter);
-    pageTitle->setText("State");
+    pageTitle->setText(root.firstChildElement("pageTitle").text());
     pageTitle->setObjectName("title");
     pageTitle->setGeometry(0,height*11/100,width,height*6/100);
 

@@ -20,6 +20,8 @@ public:
     bool deleteData(QString filename);
     void getReadAllData(int key);
 
+    QDomElement root;
+
 
 signals:
 

@@ -19,9 +19,9 @@ public:
      void getReadAllData(int key);
      QString getData(int row,int columnId);
      QString getCSVData();
+     void deleteAllData();
 
-
-
+     QDomElement root;
 
 signals:
 

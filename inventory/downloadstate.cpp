@@ -1,10 +1,10 @@
 #include "downloadstate.h"
-
+#include "extern.h"
 
 DownloadStateModel::DownloadStateModel(QObject *parent) : QAbstractTableModel(parent)
 {
 
-
+    root = doc.documentElement().firstChildElement("StateOption");
 }
 
 int DownloadStateModel::rowCount(const QModelIndex &) const
@@ -62,9 +62,9 @@ QVariant DownloadStateModel::headerData(int section, Qt::Orientation orientation
             switch (section)
             {
                 case 0:
-                    return QString("Tags");
+                    return QString(root.firstChildElement("taskModelCol_1").text());
                 case 1:
-                    return QString("Downloading");
+                    return QString(root.firstChildElement("taskModelCol_2").text());
 
             }
         }
@@ -74,6 +74,7 @@ QVariant DownloadStateModel::headerData(int section, Qt::Orientation orientation
 
 void DownloadStateModel::getReadAllData(int key_id)
 {
+    beginInsertRows(QModelIndex(),0,rowCount());
     QSqlQuery query;
     query.prepare("SELECT * FROM download;");
     query.exec();
@@ -90,6 +91,7 @@ void DownloadStateModel::getReadAllData(int key_id)
        }
     
     }
+    endInsertRows();
  
 }
 bool DownloadStateModel::insertData(QString filename,int key)

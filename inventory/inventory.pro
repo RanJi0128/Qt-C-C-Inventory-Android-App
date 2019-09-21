@@ -1,6 +1,6 @@
 
 
-QT += sql core widgets androidextras
+QT += sql core widgets androidextras xml
 
 CONFIG += c++11
 
@@ -21,6 +21,7 @@ SOURCES += consumptask.cpp \
         consumptaskmenu.cpp \
         customkeyboard.cpp \
         database.cpp \
+        deletedatadlg.cpp \
         downloadstate.cpp \
         generaloption.cpp \
         inventorytask.cpp \
@@ -47,7 +48,9 @@ HEADERS += consumptask.h \
     consumptaskmenu.h \
     customkeyboard.h \
     database.h \
+    deletedatadlg.h \
     downloadstate.h \
+    extern.h \
     generaloption.h \
     include.h \
     inventorytask.h \
@@ -65,10 +68,12 @@ HEADERS += consumptask.h \
 DISTFILES +=android/AndroidManifest.xml \
     android/assets/drop-arrow.png \
     android/assets/hide.png \
+    android/assets/question.png \
     android/assets/style.qss \
     android/assets/times.png \
     android/assets/unhide.png \
     android/src/com/jni/systeminfo/AppActivity.java \
+    android/src/com/jni/systeminfo/AppLogoff.java \
     android/src/com/jni/systeminfo/BatteryLevelListener.java \
     android/src/com/jni/systeminfo/DeviceInformation.java \
     android/libs/jcifs-1.3.19.jar \

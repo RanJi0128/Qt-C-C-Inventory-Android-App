@@ -23,10 +23,11 @@ public:
     void connectToDataBase();
 
 
-    QString m_dbState;
+    int m_dbState;
 
 public:
     QSqlDatabase db;
+
 
 private:
     void openDataBase();

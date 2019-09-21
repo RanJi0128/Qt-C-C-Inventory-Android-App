@@ -14,7 +14,7 @@ public:
 
 
     bool deleteData(QString pri_id);
-    void deleteAllData();
+
 
     QTableView *taskMenu;
     TableModel table;
@@ -25,10 +25,13 @@ public:
     QPushButton *editBtn;
     QPushButton *menuBtn;
 
+    QDomElement root;
+
     ConsumpTaskCreate *createTaskView;
     bool permission[3];
 
     void interface();
+
 
     int userKey;
     int width;

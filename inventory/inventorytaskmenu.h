@@ -14,7 +14,7 @@ public:
 
 
     bool deleteData(QString pri_id);
-    void deleteAllData();
+
 
     QTableView *taskMenu;
     InventoryTableModel table;
@@ -24,6 +24,8 @@ public:
     QPushButton *deleteBtn;
     QPushButton *editBtn;
     QPushButton *menuBtn;
+
+    QDomElement root;
 
     InventoryTaskCreate *createTaskView;
     bool permission[3];

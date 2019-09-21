@@ -1,5 +1,7 @@
 #include "options.h"
 #include "mainwindow.h"
+#include "extern.h"
+
 Options::Options(QWidget *parent) : QMainWindow(parent)
 {
     QSize size = qApp->screens()[0]->size();
@@ -14,6 +16,8 @@ Options::Options(QWidget *parent) : QMainWindow(parent)
 }
 void Options::interface()
 {
+    root = doc.documentElement().firstChildElement("Options");
+
     optionTabs = new QTabWidget(this);
     optionTabs->setTabPosition(QTabWidget::South);
 
@@ -22,12 +26,12 @@ void Options::interface()
     languageOption = new LanguageOption(this);
     stateOption = new StateOption(this,m->userKey);
 
-    //setCentralWidget(optionTabs);
-    optionTabs->setFixedSize(width,height);
-    optionTabs->addTab(generalOption,"General");
-    optionTabs->addTab(advancedOption,"Advanced");
-    optionTabs->addTab(languageOption,"Language");
-    optionTabs->addTab(stateOption,"State");
+    setCentralWidget(optionTabs);
+    //optionTabs->setFixedSize(width,height);
+    optionTabs->addTab(generalOption,root.firstChildElement("optionTab_1").text());
+    optionTabs->addTab(advancedOption,root.firstChildElement("optionTab_2").text());
+    optionTabs->addTab(languageOption,root.firstChildElement("optionTab_3").text());
+    optionTabs->addTab(stateOption,root.firstChildElement("optionTab_4").text());
 
     QString sheet ="QTabBar::tab { height: %1px; width: %2px; }";
     optionTabs->setStyleSheet(sheet.arg(this->height/20).arg(this->width/4));
@@ -36,6 +40,7 @@ void Options::interface()
     connect(advancedOption,SIGNAL(winClose()),this,SLOT(winClose()));
     connect(advancedOption,SIGNAL(saveSignal()),this,SLOT(serverInfoUpdate()));
     connect(advancedOption,SIGNAL(appQuitSignal()),this,SLOT(appQuit()));
+    connect(advancedOption,SIGNAL(fullScreenSignal(int)),this,SLOT(fullscreenMode(int)));
 
     exitPermission = m->m_permission[3];
 
@@ -44,12 +49,14 @@ void Options::interface()
     else {
         advancedOption->exitBt->setEnabled(0);
     }
+    advancedOption->cb->setChecked(m->fullScreenFlag);
     if(m->serverInfo.ip_address!=nullptr)
      {
         QString str = m->serverInfo.ip_address+'/'+ m->serverInfo.userName+'/'+m->serverInfo.sharedFolderPath;
-        advancedOption->netpathEdit->setText(str);
+        advancedOption->netpathEdit->setText(str.mid(0,str.length()-1));
         advancedOption->passwdEdit->setText(m->serverInfo.password);
      }
+    advancedOption->time_control->setCurrentIndex(m->logoffTime==0 ? 9 : (m->logoffTime-5)/5);
 
 
 }
@@ -58,10 +65,29 @@ void Options::winClose()
 
     m->isCtrlEnable=false;
     close();
+    if(m->fullScreenFlag)
+        m->showFullScreen();
+    else {
+        m->show();
+    }
+}
+void Options::fullscreenMode(int state)
+{
+    if(state)
+    {
+       m->fullScreenFlag = true;
+       this->showFullScreen();
+    }
+    else {
+        m->fullScreenFlag = false;
+        this->showNormal();
+    }
+
 }
 void Options::serverInfoUpdate()
 {
     m->serverInfoRead();
+    m->logoffTimeRead();
 }
 void Options::appQuit()
 {

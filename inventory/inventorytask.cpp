@@ -1,10 +1,10 @@
 #include "inventorytask.h"
-
+#include "extern.h"
 
 InventoryTableModel::InventoryTableModel(QObject *parent) : QAbstractTableModel(parent)
 {
 
-
+    root = doc.documentElement().firstChildElement("InventoryTaskMenu");
 }
 
 int InventoryTableModel::rowCount(const QModelIndex &) const
@@ -62,9 +62,9 @@ QVariant InventoryTableModel::headerData(int section, Qt::Orientation orientatio
             switch (section)
             {
                 case 0:
-                    return QString("Tags");
+                    return QString(root.firstChildElement("taskModelCol_1").text());
                 case 1:
-                    return QString("PhysicalCount");
+                    return QString(root.firstChildElement("taskModelCol_2").text());
 
             }
         }
@@ -84,6 +84,7 @@ QString InventoryTableModel::getData(int row, int columnId)
 
 void InventoryTableModel::getReadAllData(int key_id)
 {
+    beginInsertRows(QModelIndex(),0,rowCount());
     QSqlQuery query;
     query.prepare("SELECT * FROM inventory;");
     query.exec();
@@ -104,6 +105,7 @@ void InventoryTableModel::getReadAllData(int key_id)
        }
     
     }
+    endInsertRows();
  
 }
 QString InventoryTableModel::getCSVData()
@@ -115,5 +117,14 @@ QString InventoryTableModel::getCSVData()
         data = data + table.at(i).at(0)+","+table.at(i).at(1)+","+table.at(i).at(2)+","+table.at(i).at(3)+table.at(i).at(4)+"\n";
     }
     return data;
+
+}
+
+void InventoryTableModel::deleteAllData()
+{
+   table.clear();
+   QSqlQuery query;
+   query.prepare("DELETE FROM inventory");
+   query.exec();
 
 }

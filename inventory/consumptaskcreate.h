@@ -47,6 +47,8 @@ public:
     TableModel *table;
     CustomKeyBoard *customKeyboard;
 
+    QDomElement root;
+
     bool eventFilter(QObject *obj, QEvent *event)
     {
 //        QByteArray ba = QString::number(event->type()).toLocal8Bit();

@@ -14,6 +14,8 @@ public:
     QTableView *taskMenu;
     DownloadStateModel table;
 
+    QDomElement root;
+
     int userKey;
     int width;
     int height;

@@ -49,6 +49,8 @@ public:
 
     MainWindow *m;
 
+    QDomElement root;
+
     int width;
     int height;
 

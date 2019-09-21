@@ -1,6 +1,7 @@
 #include "shippingtaskcreate.h"
 #include "usermanger.h"
 #include "shippingtask.h"
+#include "extern.h"
 
 ShippingTaskCreate::ShippingTaskCreate(int key, QString pri_id,QString title,QString order,QString ship,QWidget *parent) : QMainWindow(parent)
 {
@@ -32,24 +33,26 @@ ShippingTaskCreate::ShippingTaskCreate(int key, QString title,QWidget *parent) :
 
 void ShippingTaskCreate::interface()
 {
+    root = doc.documentElement().firstChildElement("ShippingTaskCreate");
+
     pageTitle = new QLabel(this);
     pageTitle->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     pageTitle->setAlignment(Qt::AlignHCenter);
-    pageTitle->setText("Shipping "+wtitle);
+    pageTitle->setText(root.firstChildElement("pageTitle").text()+" "+wtitle);
     pageTitle->setObjectName("title");
     pageTitle->setGeometry(0,height*11/100,width,height*6/100);
 
     orderLabel = new QLabel(this);
     orderLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     orderLabel->setAlignment(Qt::AlignHCenter);
-    orderLabel->setText("OrderNumber");
+    orderLabel->setText(root.firstChildElement("orderLabel").text());
     orderLabel->setObjectName("taskLabel");
     orderLabel->resize(width*29/100,height*4/100);
     orderLabel->move((width-orderLabel->width())/2-width*30/100,height*26/100);
 
     QPixmap pixmap("assets:/clear.png");
     orderEdit = new LineEdit(pixmap,2,this);
-    orderEdit->setPlaceholderText("Order Input");
+    orderEdit->setPlaceholderText(root.firstChildElement("orderEdit").text());
     orderEdit->resize(width*69/100,height*6/100);
     orderEdit->move((width-orderEdit->width())/2-width*7/100,height*30/100);
     orderEdit->setObjectName("inputEdit");
@@ -60,13 +63,13 @@ void ShippingTaskCreate::interface()
     shipLabel = new QLabel(this);
     shipLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     shipLabel->setAlignment(Qt::AlignHCenter);
-    shipLabel->setText("Ship#");
+    shipLabel->setText(root.firstChildElement("shipLabel").text());
     shipLabel->setObjectName("taskLabel");
     shipLabel->resize(width*29/100,height*4/100);
     shipLabel->move((width-shipLabel->width())/2-width*38/100,height*37/100);
 
     shipEdit = new LineEdit(pixmap,2,this);
-    shipEdit->setPlaceholderText("Ship Input");
+    shipEdit->setPlaceholderText(root.firstChildElement("shipEdit").text());
     shipEdit->resize(width*69/100,height*6/100);
     shipEdit->move((width-shipEdit->width())/2-width*7/100,height*42/100);
     shipEdit->setObjectName("inputEdit");
@@ -77,28 +80,28 @@ void ShippingTaskCreate::interface()
     orderBtn = new QPushButton(this);
     orderBtn->resize(width*15/100,height*6/100);
     orderBtn->move((width-orderBtn->width())/2+width*36/100,height*30/100);
-    orderBtn->setText("ABC");
+    orderBtn->setText(root.firstChildElement("orderBtn").text());
     orderBtn->setObjectName("taskCtrlBtn");
     connect(orderBtn,SIGNAL(clicked()),this,SLOT(keyboardShow()));
 
     shipBtn = new QPushButton(this);
     shipBtn->resize(width*15/100,height*6/100);
     shipBtn->move((width-shipBtn->width())/2+width*36/100,height*42/100);
-    shipBtn->setText("ABC");
+    shipBtn->setText(root.firstChildElement("shipBtn").text());
     shipBtn->setObjectName("taskCtrlBtn");
     connect(shipBtn,SIGNAL(clicked()),this,SLOT(keyboardShow()));
 
     cancelBtn = new QPushButton(this);
     cancelBtn->resize(width*26/100,height*6/100);
     cancelBtn->move((width-cancelBtn->width())/2-width*25/100,height*76/100);
-    cancelBtn->setText("Cancel");
+    cancelBtn->setText(root.firstChildElement("cancelBtn").text());
     cancelBtn->setObjectName("taskCtrlBtn");
     connect(cancelBtn,SIGNAL(clicked()),this,SLOT(close()));
 
     continueBt = new QPushButton(this);
     continueBt->resize(width*26/100,height*6/100);
     continueBt->move((width-cancelBtn->width())/2+width*27/100,height*76/100);
-    continueBt->setText("Continue");
+    continueBt->setText(root.firstChildElement("continueBt").text());
     continueBt->setObjectName("taskCtrlBtn");
     connect(continueBt,SIGNAL(clicked()),this,SLOT(insertTask()));
 
@@ -112,12 +115,12 @@ void ShippingTaskCreate::insertTask()
          {
             if(!updateData(orderEdit->text(), shipEdit->text(), userKey, m_pri_id))
              {
-                QMessageBox::warning(this,"Input Error","Update failed!");
+                QMessageBox::warning(this,root.firstChildElement("errorTitle").text(),root.firstChildElement("error_1").text());
                 return;
              }
         }
         else {
-                QMessageBox::warning(this,"Input Error","Please Input data correctly!");
+                QMessageBox::warning(this,root.firstChildElement("errorTitle").text(),root.firstChildElement("error_2").text());
                 return;
         }
 
@@ -128,12 +131,12 @@ void ShippingTaskCreate::insertTask()
          {
             if(!insertData(orderEdit->text(), shipEdit->text(), userKey))
             {
-                QMessageBox::warning(this,"Input Error","Order number exists already!");
+                QMessageBox::warning(this,root.firstChildElement("errorTitle").text(),root.firstChildElement("error_3").text());
                 return;
             }
          }
         else {
-            QMessageBox::warning(this,"Input Error","Please Input data correctly!");
+            QMessageBox::warning(this,root.firstChildElement("errorTitle").text(),root.firstChildElement("error_4").text());
             return;
         }
     }
@@ -159,10 +162,11 @@ bool ShippingTaskCreate::insertData(QString oderStr, QString shipStr,int key)
        else {
          return false;
        }
-       query.prepare("INSERT INTO shipping (key, order_val, ship_val) VALUES (:key, :order_val, :ship_val)");
+       query.prepare("INSERT INTO shipping (key, order_val, ship_val, c_time) VALUES (:key, :order_val, :ship_val, :c_time)");
        query.bindValue(":key", key);
        query.bindValue(":order_val", oderStr);
        query.bindValue(":ship_val", shipStr);
+       query.bindValue(":c_time", QDateTime::currentDateTime().toString("MM_dd_hh_mm"));
        if(query.exec())
        {
            return true;
@@ -176,11 +180,12 @@ bool ShippingTaskCreate::updateData(QString oderStr, QString shipStr, int key, Q
 //      const char *c_str2 = ba.data();
 //    __android_log_write(ANDROID_LOG_INFO,"call-------------->",c_str2);
         QSqlQuery query;
-        query.prepare("UPDATE shipping SET key=:key, order_val=:order_val, ship_val=:ship_val WHERE pri_id=:pri_id");
+        query.prepare("UPDATE shipping SET key=:key, order_val=:order_val, ship_val=:ship_val, c_time=:c_time WHERE pri_id=:pri_id");
         query.bindValue(":key", key);
         query.bindValue(":order_val", oderStr);
         query.bindValue(":ship_val", shipStr);
         query.bindValue(":pri_id", pri_id.toInt());
+        query.bindValue(":c_time", QDateTime::currentDateTime().toString("MM_dd_hh_mm"));
 
         if(query.exec())
         {

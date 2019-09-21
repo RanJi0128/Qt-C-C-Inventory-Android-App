@@ -1,5 +1,5 @@
 #include "inventorytaskmenu.h"
-
+#include "extern.h"
 InventoryTaskMenu::InventoryTaskMenu(QWidget *parent,int key) : QMainWindow(parent)
 {
     QSize size = qApp->screens()[0]->size();
@@ -18,10 +18,12 @@ InventoryTaskMenu::InventoryTaskMenu(QWidget *parent,int key) : QMainWindow(pare
 }
 void InventoryTaskMenu::interface()
 {
+    root = doc.documentElement().firstChildElement("InventoryTaskMenu");
+
     pageTitle = new QLabel(this);
     pageTitle->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     pageTitle->setAlignment(Qt::AlignHCenter);
-    pageTitle->setText("Inventory Jobs/Units");
+    pageTitle->setText(root.firstChildElement("pageTitle").text());
     pageTitle->setObjectName("title");
     pageTitle->setGeometry(0,height*11/100,width,height*6/100);
 
@@ -30,7 +32,7 @@ void InventoryTaskMenu::interface()
     taskMenu = new QTableView(this);
     taskMenu->setModel(&table);
     taskMenu->resize(width-30,height*70/100);
-    taskMenu->move((width-taskMenu->width())/2,pageTitle->y()+pageTitle->height()+50);
+    taskMenu->move((width-taskMenu->width())/2,pageTitle->y()+pageTitle->height()+15);
     taskMenu->horizontalHeader()->setStretchLastSection(true);
     taskMenu->verticalHeader()->hide();
     taskMenu->setEditTriggers(QAbstractItemView::NoEditTriggers);
@@ -43,14 +45,14 @@ void InventoryTaskMenu::interface()
     menuBtn = new QPushButton(this);
     menuBtn->resize(width*19/100,height*6/100);
     menuBtn->move((width-menuBtn->width())/2-width*38/100,height*90/100);
-    menuBtn->setText("Menu");
+    menuBtn->setText(root.firstChildElement("menuBtn").text());
     menuBtn->setObjectName("taskCtrlBtn");
     connect(menuBtn,SIGNAL(clicked()),this,SLOT(menuShow()));
 
     deleteBtn = new QPushButton(this);
     deleteBtn->resize(width*19/100,height*6/100);
     deleteBtn->move((width-deleteBtn->width())/2-width*13/100,height*90/100);
-    deleteBtn->setText("Del");
+    deleteBtn->setText(root.firstChildElement("deleteBtn").text());
     deleteBtn->setObjectName("taskCtrlBtn");
     deleteBtn->setEnabled(0);
     connect(deleteBtn,SIGNAL(clicked()),this,SLOT(deleteConfirm()));
@@ -58,7 +60,7 @@ void InventoryTaskMenu::interface()
     editBtn = new QPushButton(this);
     editBtn->resize(width*19/100,height*6/100);
     editBtn->move((width-editBtn->width())/2+width*13/100,height*90/100);
-    editBtn->setText("Edit");
+    editBtn->setText(root.firstChildElement("edit").text());
     editBtn->setObjectName("taskCtrlBtn");
     editBtn->setEnabled(0);
     connect(editBtn,SIGNAL(clicked()),this,SLOT(editShow()));
@@ -66,7 +68,7 @@ void InventoryTaskMenu::interface()
     createBtn = new QPushButton(this);
     createBtn->resize(width*19/100,height*6/100);
     createBtn->move((width-createBtn->width())/2+width*38/100,height*90/100);
-    createBtn->setText("Create");
+    createBtn->setText(root.firstChildElement("create").text());
     createBtn->setObjectName("taskCtrlBtn");
     if(permission[0])
      createBtn->setEnabled(1);
@@ -83,7 +85,7 @@ void InventoryTaskMenu::menuShow()
 void InventoryTaskMenu::deleteConfirm()
 {
 
-    int res = QMessageBox::warning(this,"Delete Confirm!","Would you delete really ?",QMessageBox::Ok,QMessageBox::Cancel);
+    int res = QMessageBox::warning(this,root.firstChildElement("delConfirmTitle").text(),root.firstChildElement("delConfirmText").text(),QMessageBox::Ok,QMessageBox::Cancel);
 
     if(res==QMessageBox::Ok)
     {
@@ -127,9 +129,13 @@ void InventoryTaskMenu::editShow()
     editBtn->setEnabled(0);
     deleteBtn->setEnabled(0);
 
-    createTaskView = new InventoryTaskCreate(userKey,table.getData(rowNum,0),"Edit",table.getData(rowNum,2),table.getData(rowNum,3),table.getData(rowNum,4),this);
+    createTaskView = new InventoryTaskCreate(userKey,table.getData(rowNum,0),root.firstChildElement("edit").text(),table.getData(rowNum,2),table.getData(rowNum,3),table.getData(rowNum,4),this);
     createTaskView->table = &table;
+   if(this->isFullScreen())
     createTaskView->showFullScreen();
+   else {
+     createTaskView->show();
+   }
 }
 
 void InventoryTaskMenu::createShow()
@@ -138,9 +144,13 @@ void InventoryTaskMenu::createShow()
     editBtn->setEnabled(0);
     deleteBtn->setEnabled(0);
 
-    createTaskView = new InventoryTaskCreate(userKey,"Create",this);
+    createTaskView = new InventoryTaskCreate(userKey,root.firstChildElement("create").text(),this);
     createTaskView->table = &table;
-    createTaskView->showFullScreen();
+    if(this->isFullScreen())
+     createTaskView->showFullScreen();
+    else {
+        createTaskView->show();
+    }
 }
 
 bool InventoryTaskMenu::deleteData(QString pri_id)
@@ -159,12 +169,5 @@ bool InventoryTaskMenu::deleteData(QString pri_id)
 
         return false;
 }
-void InventoryTaskMenu::deleteAllData()
-{
-   table.table.clear();
-   QSqlQuery query;
-   query.prepare("DELETE FROM inventory");
-   query.exec();
 
-}
 

@@ -28,5 +28,7 @@
 #include <QAbstractItemView>
 #include <QDialog>
 #include <QTimer>
+#include <QCheckBox>
+#include <QDomDocument>
 
 #endif // INCLUDE_H

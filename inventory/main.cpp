@@ -68,7 +68,28 @@ void InitializeForAndroidInformation()
      QAndroidJniObject::callStaticMethod<void>("com/jni/systeminfo/DeviceInformation", "sendInformation","(Landroid/content/Context;)V",
                                                QtAndroid::androidContext().object<jobject>());
 }
+void logoff(JNIEnv *env, jobject thiz)
+{
+    Q_UNUSED(env)
+    Q_UNUSED(thiz)
+    static_cast<MainWindow*>(pRootObject)->appLogoff();
+}
+void Initiallogoff()
+{
+    JNINativeMethod methods[] = {
 
+            {  "logoff","()V",reinterpret_cast<void*>(logoff) }
+        };
+    QAndroidJniObject sysInfor_j("com/jni/systeminfo/AppLogoff");
+
+    QAndroidJniEnvironment env;
+
+    jclass objectClass = env->GetObjectClass(sysInfor_j.object<jobject>());
+
+    env->RegisterNatives(objectClass,methods,sizeof(methods) / sizeof(methods[0]));
+    env->DeleteLocalRef(objectClass);
+
+}
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
@@ -111,6 +132,7 @@ int main(int argc, char *argv[])
     pRootObject=&w;
     InitializeForAndroidBattery();
     InitializeForAndroidInformation();
+    Initiallogoff();
 
    return a.exec();
 }

@@ -8,6 +8,7 @@
 #include "inventorytaskmenu.h"
 #include "options.h"
 #include "downloadstate.h"
+#include "deletedatadlg.h"
 
 class MyComboBox : public QComboBox
 {
@@ -37,7 +38,7 @@ class MainWindow : public QMainWindow
 {
     Q_OBJECT
 public:
-     explicit MainWindow(QString dbState,QWidget *parent = nullptr);
+     explicit MainWindow(int dbState,QWidget *parent = nullptr);
     ~MainWindow();
 
 public :
@@ -59,16 +60,19 @@ public :
      ShippingTaskMenu *shippingTask;
      ConsumpTaskMenu *consumpTask;
      InventoryTaskMenu *inventoryTask;
+     Options *options;
 
      DownloadStateModel stateTable;
      TableModel consumpTable;
      ShippingTableModel shippingTable;
      InventoryTableModel inventoryTable;
 
-     Options *options;
+     DeleteDataDlg *deleteDlg;
+     int m_dbState;
 
+     QDomElement root;
 
-     QString m_dbState;
+     bool fullScreenFlag;
 
      bool m_permission[4];
      bool isCtrlEnable;
@@ -76,7 +80,9 @@ public :
      int width;
      int height;
      int userKey;
+     int logoffTime;
 
+     void loadXml();
      void interface();
      void dbErrorShow();
      void loginSuccess(int key, int permission);
@@ -89,13 +95,22 @@ public :
      void androidSysteminfo(QString info);
 
      void serverInfoRead();
+     void logoffTimeRead();
      bool download(QString,QString,QString,QString,QString);
-     void downloadConfirm(bool state,QString filename,QString out);
+     void downloadConfirm(bool state,QString filename,QString taskName,QString out);
+     void downloadAllData(int);
      void dataConfirm();
+     void dbDataDelete(int tableNum);
+     void downloadDataDel(QString,QString,QString,QString,QString,bool);
 
+     void appLogoff();
 
      struct SysInfo{
          SysInfo()
+         {
+             init();
+         }
+         void init()
          {
              batteryLevel=0;
              onCharge=false;
@@ -123,6 +138,10 @@ public :
 
          ServerInfo()
          {
+             init();
+         }
+         void init()
+         {
              ip_address="";
              userName="";
              password="";
@@ -142,6 +161,9 @@ public slots:
      void optionsShow();
      void downloadFile();
      void backgroundTransfer();
+     void dataDelDlg();
+     void deleteData(int flag);
+
 
 };
 

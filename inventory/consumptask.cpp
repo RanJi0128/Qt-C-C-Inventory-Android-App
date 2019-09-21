@@ -1,10 +1,10 @@
 #include "consumptask.h"
-
+#include "extern.h"
 
 TableModel::TableModel(QObject *parent) : QAbstractTableModel(parent)
 {
 
-
+    root = doc.documentElement().firstChildElement("ConsumpTaskMenu");
 }
 
 int TableModel::rowCount(const QModelIndex &) const
@@ -56,15 +56,16 @@ QVariant TableModel::data(const QModelIndex &index, int role) const
 }
 QVariant TableModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
+
     if (role == Qt::DisplayRole)
     {
         if (orientation == Qt::Horizontal) {
             switch (section)
             {
                 case 0:
-                    return QString("Tags");
+                    return QString(root.firstChildElement("taskModelCol_1").text());
                 case 1:
-                    return QString("Work Order");
+                    return QString(root.firstChildElement("taskModelCol_1").text());
 
             }
         }
@@ -84,6 +85,7 @@ QString TableModel::getData(int row, int columnId)
 
 void TableModel::getReadAllData(int key_id)
 {
+    beginInsertRows(QModelIndex(),0,rowCount());
     QSqlQuery query;
     query.prepare("SELECT * FROM consump;");
     query.exec();
@@ -102,6 +104,7 @@ void TableModel::getReadAllData(int key_id)
        }
     
     }
+    endInsertRows();
  
 }
 QString TableModel::getCSVData()
@@ -113,5 +116,13 @@ QString TableModel::getCSVData()
         data = data + table.at(i).at(0)+","+table.at(i).at(1)+","+table.at(i).at(2)+","+table.at(i).at(3)+"\n";
     }
     return data;
+
+}
+void TableModel::deleteAllData()
+{
+   table.clear();
+   QSqlQuery query;
+   query.prepare("DELETE FROM consump");
+   query.exec();
 
 }

@@ -14,7 +14,6 @@ public:
 
 
     bool deleteData(QString pri_id);
-    void deleteAllData();
 
     QTableView *taskMenu;
     ShippingTableModel table;
@@ -27,6 +26,8 @@ public:
 
     ShippingTaskCreate *createTaskView;
     bool permission[3];
+
+    QDomElement root;
 
     void interface();
 

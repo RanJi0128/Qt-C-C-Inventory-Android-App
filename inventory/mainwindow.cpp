@@ -1,17 +1,22 @@
 #include "mainwindow.h"
+#include "extern.h"
 
-MainWindow::MainWindow(QString dbState,QWidget *parent) : QMainWindow(parent)
+QDomDocument doc;
+
+MainWindow::MainWindow(int dbState,QWidget *parent) : QMainWindow(parent)
 {
   QSize size = qApp->screens()[0]->size();
   width = size.width();
   height = size.height();
   this->setGeometry(0,0,width,height);
-
+  this->setObjectName("mainwindow");
   m_dbState=dbState;
-  //this->showFullScreen();
 
   userKey=0;
+  logoffTime=5;
+  fullScreenFlag=true;
 
+  loadXml();
   interface();
 
 }
@@ -19,22 +24,37 @@ MainWindow::~MainWindow()
 {
     mainTimer->stop();
 }
+void MainWindow::loadXml()
+{
+    QFile inFile("assets:/en.xml");
+    if (!inFile.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        QMessageBox::warning(this,"Error!","No Xml!");
+        return;
+    }
+    QXmlStreamReader xmlReader(&inFile);
+    doc.setContent(&inFile);
+
+}
 void MainWindow::interface()
 {
 
-    if(m_dbState.compare("ok"))
+    if(m_dbState)
         dbErrorShow();
 
     serverInfoRead();
+    logoffTimeRead();
 
-    mainTitle = new QLabel(this);
-    mainTitle->setText("Operator,  please Log on");
+    root = doc.documentElement().firstChildElement("main");
+
+    mainTitle = new QLabel(this);    
+    mainTitle->setText(root.firstChildElement("mainTitle").text());
     mainTitle->setAlignment(Qt::AlignCenter);
     mainTitle->setGeometry(0,height*11/100,width,height*6/100);
     mainTitle->setObjectName("title");
 
     taskLabel = new QLabel(this);
-    taskLabel->setText("Tasks");
+    taskLabel->setText(root.firstChildElement("taskLabel").text());
     taskLabel->setAlignment(Qt::AlignCenter);
     taskLabel->resize(width*46/100,height*6/100);
     taskLabel->move((width-taskLabel->width())/2,height*37/100);
@@ -43,7 +63,7 @@ void MainWindow::interface()
     loginBtn = new QPushButton(this);
     loginBtn->resize(width*80/100,height*8/100);
     loginBtn->move((width-loginBtn->width())/2,height*24/100);
-    loginBtn->setText("Login");
+    loginBtn->setText(root.firstChildElement("loginBtn").text());
     loginBtn->setObjectName("loginBtn");
     connect(loginBtn,SIGNAL(clicked()),this,SLOT(loginPageShow()));
 
@@ -55,7 +75,7 @@ void MainWindow::interface()
 
     taskModel = new QStringListModel(this);
     QStringList List;
-    List << "Shipping" << "Inventory" << "Consumption";
+    List << root.firstChildElement("taskModel_1").text() << root.firstChildElement("taskModel_2").text() << root.firstChildElement("taskModel_3").text();
     taskModel->setStringList(List);
 
     task_control->setModel(taskModel);
@@ -63,7 +83,7 @@ void MainWindow::interface()
     downloadBtn = new QPushButton(this);
     downloadBtn->resize(width*32/100,height*16/100);
     downloadBtn->move((width-downloadBtn->width())/2-downloadBtn->width()*73/100,height*59/100);
-    downloadBtn->setText("Download");
+    downloadBtn->setText(root.firstChildElement("downloadBtn").text());
     downloadBtn->setObjectName("controlBtn");
     downloadBtn->setEnabled(0);
     connect(downloadBtn,SIGNAL(clicked()),this,SLOT(downloadFile()));
@@ -71,7 +91,7 @@ void MainWindow::interface()
     scanBtn = new QPushButton(this);
     scanBtn->resize(width*32/100,height*16/100);
     scanBtn->move((width-scanBtn->width())/2+scanBtn->width()*73/100,height*59/100);
-    scanBtn->setText("Scan");
+    scanBtn->setText(root.firstChildElement("scanBtn").text());
     scanBtn->setObjectName("controlBtn");
     scanBtn->setEnabled(0);
     connect(scanBtn,SIGNAL(clicked()),this,SLOT(taskShow()));
@@ -79,14 +99,15 @@ void MainWindow::interface()
     purgeBtn = new QPushButton(this);
     purgeBtn->resize(width*32/100,height*16/100);
     purgeBtn->move((width-purgeBtn->width())/2-purgeBtn->width()*73/100,height*80/100);
-    purgeBtn->setText("Purge");
+    purgeBtn->setText(root.firstChildElement("purgeBtn").text());
     purgeBtn->setObjectName("controlBtn");
     purgeBtn->setEnabled(0);
+    connect(purgeBtn,SIGNAL(clicked()),this,SLOT(dataDelDlg()));
 
     optionBtn = new QPushButton(this);
     optionBtn->resize(width*32/100,height*16/100);
     optionBtn->move((width-optionBtn->width())/2+optionBtn->width()*73/100,height*80/100);
-    optionBtn->setText("Options");
+    optionBtn->setText(root.firstChildElement("optionBtn").text());
     optionBtn->setObjectName("controlBtn");
     optionBtn->setEnabled(0);
     connect(optionBtn,SIGNAL(clicked()),this,SLOT(optionsShow()));
@@ -131,13 +152,21 @@ void MainWindow::backgroundTransfer()
 void MainWindow::loginPageShow()
 {
     loginPage =new UserManger(this);
-    loginPage->showFullScreen();
+    if(fullScreenFlag)
+     loginPage->showFullScreen();
+    else {
+       loginPage->show();
+    }
 
 }
 void MainWindow::optionsShow()
 {
     options = new Options(this);
-    options->showFullScreen();
+    if(fullScreenFlag)
+      options->showFullScreen();
+    else {
+       options->show();
+    }
     options->generalOption->batteryInfoShow(sysInfo.batteryLevel,sysInfo.onCharge);
     options->generalOption->sysInfoShow(sysInfo.sysInfo);
     isCtrlEnable=true;
@@ -147,20 +176,31 @@ void MainWindow::optionsShow()
 void MainWindow::dbErrorShow()
 {
 
-    if(QMessageBox::Ok==QMessageBox::warning(this,"Database Error",m_dbState))
-                      exit(0);
+   if(m_dbState==1)
+     {
+        QMessageBox::warning(this,root.firstChildElement("dbErrorTilte").text(),root.firstChildElement("dbErrorText_1").text());
+     }
+    else if(m_dbState==2){
+        QMessageBox::warning(this,root.firstChildElement("dbErrorTilte").text(),root.firstChildElement("dbErrorText_2").text());
+    }
+    exit(0);
 
 }
 
 void MainWindow::consumpTaskShow()
 {
+
     consumpTask = new ConsumpTaskMenu(this,userKey);
     consumpTask->permission[0]=m_permission[0];
     if(consumpTask->permission[0])
       consumpTask->createBtn->setEnabled(1);
     consumpTask->permission[1]=m_permission[1];
     consumpTask->permission[2]=m_permission[2];
-    consumpTask->showFullScreen();
+    if(fullScreenFlag)
+      consumpTask->showFullScreen();
+    else {
+        consumpTask->show();
+    }
 
 }
 void MainWindow::shippingTaskShow()
@@ -171,7 +211,11 @@ void MainWindow::shippingTaskShow()
       shippingTask->createBtn->setEnabled(1);
     shippingTask->permission[1]=m_permission[1];
     shippingTask->permission[2]=m_permission[2];
+   if(fullScreenFlag)
     shippingTask->showFullScreen();
+   else {
+       shippingTask->show();
+   }
 
 }
 void MainWindow::inventoryTaskShow()
@@ -182,7 +226,11 @@ void MainWindow::inventoryTaskShow()
        inventoryTask->createBtn->setEnabled(1);
      inventoryTask->permission[1]=m_permission[1];
      inventoryTask->permission[2]=m_permission[2];
+    if(fullScreenFlag)
      inventoryTask->showFullScreen();
+    else {
+        inventoryTask->show();
+    }
 
  }
 void MainWindow::taskShow()
@@ -264,6 +312,26 @@ void MainWindow::loginSuccess(int key, int permission)
         scanBtn->setEnabled(1);
      }
 
+
+
+}
+void MainWindow::appLogoff()
+{
+
+     QWidget *widget = QApplication::activeWindow();
+     if(widget->objectName().compare("mainwindow"))
+     {
+         widget->close();
+     }
+     task_control->setCurrentIndex(0);
+     task_control->setEnabled(0);
+     downloadBtn->setEnabled(0);
+     scanBtn->setEnabled(0);
+     purgeBtn->setEnabled(0);
+     optionBtn->setEnabled(0);
+     isCtrlEnable=false;
+
+
 }
 void MainWindow::serverInfoRead()
 {
@@ -274,6 +342,7 @@ void MainWindow::serverInfoRead()
         {
            QStringList strList;
            QTextStream in(&file);
+           serverInfo.init();
            while (!in.atEnd())
            {
               QString line = in.readLine();
@@ -293,19 +362,47 @@ void MainWindow::serverInfoRead()
     }
 
 }
+void MainWindow::logoffTimeRead()
+{
+    QFile file("./logoffTime.txt");
+    if(file.exists())
+    {
+        file.open(QFile::ReadOnly);
+        logoffTime =file.readAll().toInt();
+        file.close();
+    }
+    QAndroidJniObject::callStaticMethod<void>("com/jni/systeminfo/AppActivity", "sysLogoffTime","(I)V",logoffTime);
+}
 void MainWindow::downloadFile()
 {
-    jboolean state = false;
+
     if(serverInfo.ip_address == nullptr)
     {
-      QMessageBox::information(this,"Error!","Have no Server!");
+      QMessageBox::information(this,root.firstChildElement("serverErrorTitle").text(),root.firstChildElement("serverErrorText").text());
       return;
     }
+    int res = QMessageBox::information(this,root.firstChildElement("downloadConfirmTitle").text(),root.firstChildElement("downloadConfirmText").text(),QMessageBox::Cancel,QMessageBox::Ok);
+    if(res==QMessageBox::Ok)
+    {
+        for(int i =0;i<3;i++)
+        {
+            downloadAllData(i);
+        }
+    }
+    else {
+        downloadAllData(task_control->currentIndex());
+    }
+
+
+}
+void MainWindow::downloadAllData(int index)
+{
+    jboolean state = false;
     QString sharedFile = serverInfo.sharedFolderPath;
     QString filename="";
     QString outStream="";
 
-    switch (task_control->currentIndex()) {
+    switch (index) {
 
         case 0:
 
@@ -332,8 +429,7 @@ void MainWindow::downloadFile()
     }
 
     state = download(serverInfo.userName,serverInfo.password,serverInfo.ip_address,sharedFile,outStream);
-    downloadConfirm(state,filename,outStream);
-
+    downloadConfirm(state,filename,task_control->itemText(index),outStream);
 }
 bool MainWindow::download(QString userName, QString password, QString ip_address, QString sharedFile, QString outStream)
 {
@@ -345,12 +441,12 @@ bool MainWindow::download(QString userName, QString password, QString ip_address
                                                          QAndroidJniObject::fromString(outStream).object<jstring>());
 
 }
-void MainWindow::downloadConfirm(bool state,QString filename,QString out)
+void MainWindow::downloadConfirm(bool state,QString filename,QString taskName,QString out)
 {
     if(state)
-        QMessageBox::information(this,"Ok","Download Success!");
+        QMessageBox::information(this,taskName+"  "+root.firstChildElement("downloadStateTitle").text(),root.firstChildElement("downloadStateText").text());
     else{
-        int res = QMessageBox::warning(this,"Download Error!","Download Fail! Please Check SMB State.\n Would do you save downloading state?",QMessageBox::Cancel,QMessageBox::Save);
+        int res = QMessageBox::warning(this,taskName+"  "+root.firstChildElement("downloadErrorTitle").text(),root.firstChildElement("downloadErrorText_1").text(),QMessageBox::Cancel,QMessageBox::Save);
         if(res==QMessageBox::Save)
         {
             stateTable.insertData(filename,userKey);
@@ -377,6 +473,83 @@ void MainWindow::downloadConfirm(bool state,QString filename,QString out)
 void MainWindow::dataConfirm()
 {
 
-   QMessageBox::warning(this,"Download Error!"," Data have no for download!\n Please Check Data State.");
+   QMessageBox::warning(this,root.firstChildElement("downloadErrorTitle").text(),root.firstChildElement("downloadErrorText_2").text());
+
+}
+void MainWindow::dataDelDlg()
+{
+    deleteDlg=new DeleteDataDlg(this);
+    connect(deleteDlg, SIGNAL(oneDelete(int)),this,SLOT(deleteData(int)));
+    connect(deleteDlg, SIGNAL(allDelete(int)),this,SLOT(deleteData(int)));
+    connect(deleteDlg, SIGNAL(downloadDelete(int)),this,SLOT(deleteData(int)));
+    connect(deleteDlg, SIGNAL(downloadAllDelete(int)),this,SLOT(deleteData(int)));
+
+    deleteDlg->setModal(1);
+    deleteDlg->exec();
+
+}
+void MainWindow::deleteData(int flag)
+{
+    switch (flag) {
+
+    case 0:
+        dbDataDelete(task_control->currentIndex());
+        break;
+    case 1:
+        for(int i=0;i<3;i++)
+        {
+            dbDataDelete(i);
+        }
+        break;
+    case 2:
+    {
+        QString prefix;
+        if(task_control->currentIndex() == 0)
+        {
+            prefix ="shippingtask_";
+        }
+        else if(task_control->currentIndex()==1){
+            prefix ="inventorytask_";
+        }
+        else {
+            prefix ="consumptask_";
+        }
+        downloadDataDel(serverInfo.userName,serverInfo.password,serverInfo.ip_address,serverInfo.sharedFolderPath,prefix,false);
+        break;
+    }
+    case 3:
+        downloadDataDel(serverInfo.userName,serverInfo.password,serverInfo.ip_address,serverInfo.sharedFolderPath,nullptr,true);
+        break;
+
+    }
+}
+void MainWindow::dbDataDelete(int tableNum)
+{
+    switch (tableNum) {
+
+       case 0:
+        shippingTable.deleteAllData();
+        break;
+      case 1:
+        inventoryTable.deleteAllData();
+        break;
+      case 2:
+        consumpTable.deleteAllData();
+        break;
+    }
+}
+void MainWindow::downloadDataDel(QString userName, QString password, QString ip_address, QString sharedFolder,QString filePrefix, bool isAll)
+{
+    if(ip_address == nullptr)
+    {
+      QMessageBox::information(this,root.firstChildElement("serverErrorTitle").text(),root.firstChildElement("serverErrorText").text());
+      return;
+    }
+     QAndroidJniObject::callStaticMethod<void>("com/jni/systeminfo/NetworkManager", "delFile","(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Z)V",
+                                                         QAndroidJniObject::fromString(userName).object<jstring>(),
+                                                         QAndroidJniObject::fromString(password).object<jstring>(),
+                                                         QAndroidJniObject::fromString(ip_address).object<jstring>(),
+                                                         QAndroidJniObject::fromString(sharedFolder).object<jstring>(),
+                                                         QAndroidJniObject::fromString(filePrefix).object<jstring>(),isAll);
 
 }

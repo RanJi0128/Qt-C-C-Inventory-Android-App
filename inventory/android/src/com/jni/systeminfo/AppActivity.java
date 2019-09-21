@@ -44,7 +44,8 @@ public class AppActivity extends org.qtproject.qt5.android.bindings.QtActivity
         @Override
         public void run() {
            // Perform any required operation on disconnect
-             System.exit(0);
+
+            AppLogoff.startLogoff();
            // Logout from app
         }
     };

@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<BODY>
+   <main>
+     <mainTitle>Operator,  please Log on</mainTitle>
+     <taskLabel>Tasks</taskLabel>
+     <loginBtn>Login</loginBtn>
+     <taskModel_1>Shipping</taskModel_1>
+     <taskModel_2>Inventory</taskModel_2>
+     <taskModel_3>Consumption</taskModel_3>
+     <downloadBtn>Download</downloadBtn>
+     <scanBtn>Scan</scanBtn>
+     <purgeBtn>Purge</purgeBtn>
+     <optionBtn>Options</optionBtn>
+     <dbErrorTilte>Database Error</dbErrorTilte>
+     <dbErrorText_1>No Database</dbErrorText_1>
+     <dbErrorText_2>Open error Database</dbErrorText_2>
+     <serverErrorTitle>Error!</serverErrorTitle>
+     <serverErrorText>Have no Server!</serverErrorText>
+     <downloadConfirmTitle>Download Confirm!</downloadConfirmTitle>
+     <downloadConfirmText>Would do you download all data?</downloadConfirmText>
+     <downloadStateTitle>Ok</downloadStateTitle>
+     <downloadStateText>Download Success!</downloadStateText>
+     <downloadErrorTitle>Download Error!</downloadErrorTitle>
+     <downloadErrorText_1>Download Fail! Please Check SMB State. Would do you save downloading state?</downloadErrorText_1>
+     <downloadErrorText_2>Data have no for download! Please Check Data State.</downloadErrorText_2>
+   </main>
+   <UserManger>
+     <titleLabel>Login</titleLabel>
+     <usernameLabel>Operator Name</usernameLabel>
+     <passwordLabel>Password</passwordLabel>
+     <passwdEdit>Password Input</passwdEdit>
+     <explainLabel_1>Select an Operator from list.To enter the password.</explainLabel_1>
+     <explainLabel_2>Click ok and start using program.</explainLabel_2>
+     <okBtn>OK</okBtn>
+     <cancelBtn>Cancel</cancelBtn>
+     <userErrorTitle>Input Error</userErrorTitle>
+     <userErrorText>UserName or Password Wrong!</userErrorText>
+   </UserManger>
+   <ShippingTaskMenu>
+     <pageTitle>Shipping Jobs/Units</pageTitle>
+     <taskModelCol_1>Tags</taskModelCol_1>
+     <taskModelCol_2>OrderNumber</taskModelCol_2>
+     <menuBtn>Menu</menuBtn>
+     <deleteBtn>Del</deleteBtn>
+     <delConfirmTitle>Delete Confirm!</delConfirmTitle>
+     <delConfirmText>Would you delete really ?</delConfirmText>
+     <create>Create</create>
+     <edit>Edit</edit>
+   </ShippingTaskMenu>
+   <ShippingTaskCreate>
+     <pageTitle>Shipping</pageTitle>
+     <orderLabel>OrderNumber</orderLabel>
+     <orderEdit>Order Input</orderEdit>
+     <shipLabel>Ship#</shipLabel>
+     <shipEdit>Ship Input</shipEdit>
+     <orderBtn>ABC</orderBtn>
+     <shipBtn>ABC</shipBtn>
+     <cancelBtn>Cancel</cancelBtn>
+     <continueBt>Continue</continueBt>
+     <errorTitle>Input Error</errorTitle>
+     <error_1>Update failed!</error_1>
+     <error_2>Please Input data correctly!</error_2>
+     <error_3>Order number exists already!</error_3>
+     <error_4>Please Input data correctly!</error_4>
+   </ShippingTaskCreate>
+   <ConsumpTaskMenu>
+     <pageTitle>Consumption Jobs/Units</pageTitle>
+     <taskModelCol_1>Tags</taskModelCol_1>
+     <taskModelCol_2>Work Order</taskModelCol_2>
+     <menuBtn>Menu</menuBtn>
+     <deleteBtn>Del</deleteBtn>
+     <delConfirmTitle>Delete Confirm!</delConfirmTitle>
+     <delConfirmText>Would you delete really ?</delConfirmText>
+     <create>Create</create>
+     <edit>Edit</edit>
+   </ConsumpTaskMenu>
+   <ConsumpTaskCreate>
+     <pageTitle>Consumption</pageTitle>
+     <orderLabel>WorkOrder</orderLabel>
+     <orderEdit>Order Input</orderEdit>
+     <locationLabel>Location</locationLabel>
+     <locationEdit>Location Input</locationEdit>
+     <orderBtn>ABC</orderBtn>
+     <locationBtn>ABC</locationBtn>
+     <cancelBtn>Cancel</cancelBtn>
+     <continueBt>Continue</continueBt>
+     <errorTitle>Input Error</errorTitle>
+     <error_1>Update failed!</error_1>
+     <error_2>Please Input data correctly!</error_2>
+     <error_3>Order number exists already!</error_3>
+     <error_4>Please Input data correctly!</error_4>
+   </ConsumpTaskCreate>
+   <InventoryTaskMenu>
+     <pageTitle>Inventory Jobs/Units</pageTitle>
+     <taskModelCol_1>Tags</taskModelCol_1>
+     <taskModelCol_2>PhysicalCount</taskModelCol_2>
+     <menuBtn>Menu</menuBtn>
+     <deleteBtn>Del</deleteBtn>
+     <delConfirmTitle>Delete Confirm!</delConfirmTitle>
+     <delConfirmText>Would you delete really ?</delConfirmText>
+     <create>Create</create>
+     <edit>Edit</edit>
+   </InventoryTaskMenu>
+   <InventoryTaskCreate>
+     <pageTitle>Inventory</pageTitle>
+     <phycalLabel>Physical Count</phycalLabel>
+     <phycalEdit>Order Input</phycalEdit>
+     <locationLabel>Location</locationLabel>
+     <locationEdit>Location Input</locationEdit>
+     <physicalBtn>ABC</physicalBtn>
+     <locationBtn>ABC</locationBtn>
+     <sublocationLabel>Sub-Location</sublocationLabel>
+     <sublocationEdit>Sub-Location Input</sublocationEdit>
+     <sublocationBtn>ABC</sublocationBtn>
+     <cancelBtn>Cancel</cancelBtn>
+     <continueBt>Continue</continueBt>
+     <errorTitle>Input Error</errorTitle>
+     <error_1>Update failed!</error_1>
+     <error_2>Please Input data correctly!</error_2>
+     <error_3>Order number exists already!</error_3>
+     <error_4>Please Input data correctly!</error_4>
+   </InventoryTaskCreate>
+   <Options>
+     <optionTab_1>General</optionTab_1>
+     <optionTab_2>Advanced</optionTab_2>
+     <optionTab_3>Language</optionTab_3>
+     <optionTab_4>State</optionTab_4>
+   </Options>
+   <GeneralOption>
+     <pageTitle>General</pageTitle>
+     <batteryLabel_1>Main Battery</batteryLabel_1>
+     <batteryLabel_2>On charging</batteryLabel_2>
+     <menuBtn>Menu</menuBtn>
+     <networkBtn>NetWork</networkBtn>
+   </GeneralOption>
+   <AdvancedOption>
+      <pageTitle>Advanced</pageTitle>
+      <explainLabel>Minutes till auto log off :</explainLabel>
+      <netpath>Network Path</netpath>
+      <netpathEdit>ip_address/username/sharedfolder</netpathEdit>
+      <passwdLabel>Password</passwdLabel>
+      <passwdEdit>Password Input</passwdEdit>
+      <saveBtn>Save</saveBtn>
+      <menuBt>Menu</menuBt>
+      <exitBt>Exit</exitBt>
+      <errorTitle>Input Error!</errorTitle>
+      <errorText>Input all value correctly !</errorText>
+      <successTitle>Ok</successTitle>
+      <successText>All data was saved correctly!</successText>
+      <exitConfirmTitle>Exit Confirm!</exitConfirmTitle>
+      <exitConfirmText>Would you quit app really ?</exitConfirmText>
+   </AdvancedOption>
+   <LanguageOption>
+      <pageTitle>Language</pageTitle>
+   </LanguageOption>
+   <StateOption>
+      <pageTitle>State</pageTitle>
+      <taskModelCol_1>Tags</taskModelCol_1>
+      <taskModelCol_2>Downloading</taskModelCol_2>
+   </StateOption>
+   <DeleteDataDlg>
+      <title>Confirm!</title>
+      <text>Would do you delete data?</text>
+      <cb_1>All Data Delete</cb_1>
+      <cb_2>Downloaded Data Delete</cb_2>
+      <okBtn>OK</okBtn>
+      <cancelBtn>Cancel</cancelBtn>
+   </DeleteDataDlg>
+
+</BODY>

@@ -1,6 +1,7 @@
 #include "consumptaskcreate.h"
 #include "usermanger.h"
 #include "consumptask.h"
+#include "extern.h"
 
 ConsumpTaskCreate::ConsumpTaskCreate(int key, QString pri_id,QString title,QString order,QString location,QWidget *parent) : QMainWindow(parent)
 {
@@ -32,24 +33,26 @@ ConsumpTaskCreate::ConsumpTaskCreate(int key, QString title,QWidget *parent) : Q
 
 void ConsumpTaskCreate::interface()
 {
+    root = doc.documentElement().firstChildElement("ConsumpTaskCreate");
+
     pageTitle = new QLabel(this);
     pageTitle->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     pageTitle->setAlignment(Qt::AlignHCenter);
-    pageTitle->setText("Consumption "+wtitle);
+    pageTitle->setText(root.firstChildElement("pageTitle").text()+" "+wtitle);
     pageTitle->setObjectName("title");
     pageTitle->setGeometry(0,height*11/100,width,height*6/100);
 
     orderLabel = new QLabel(this);
     orderLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     orderLabel->setAlignment(Qt::AlignHCenter);
-    orderLabel->setText("WorkOrder");
+    orderLabel->setText(root.firstChildElement("orderLabel").text());
     orderLabel->setObjectName("taskLabel");
     orderLabel->resize(width*29/100,height*4/100);
     orderLabel->move((width-orderLabel->width())/2-width*30/100,height*26/100);
 
     QPixmap pixmap("assets:/clear.png");
     orderEdit = new LineEdit(pixmap,2,this);
-    orderEdit->setPlaceholderText("Order Input");
+    orderEdit->setPlaceholderText(root.firstChildElement("orderEdit").text());
     orderEdit->resize(width*69/100,height*6/100);
     orderEdit->move((width-orderEdit->width())/2-width*7/100,height*30/100);
     orderEdit->setObjectName("inputEdit");
@@ -60,13 +63,13 @@ void ConsumpTaskCreate::interface()
     locationLabel = new QLabel(this);
     locationLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     locationLabel->setAlignment(Qt::AlignHCenter);
-    locationLabel->setText("Location");
+    locationLabel->setText(root.firstChildElement("locationLabel").text());
     locationLabel->setObjectName("taskLabel");
     locationLabel->resize(width*29/100,height*4/100);
     locationLabel->move((width-locationLabel->width())/2-width*30/100,height*37/100);
 
     locationEdit = new LineEdit(pixmap,2,this);
-    locationEdit->setPlaceholderText("Location Input");
+    locationEdit->setPlaceholderText(root.firstChildElement("locationEdit").text());
     locationEdit->resize(width*69/100,height*6/100);
     locationEdit->move((width-locationEdit->width())/2-width*7/100,height*42/100);
     locationEdit->setObjectName("inputEdit");
@@ -77,28 +80,28 @@ void ConsumpTaskCreate::interface()
     orderBtn = new QPushButton(this);
     orderBtn->resize(width*15/100,height*6/100);
     orderBtn->move((width-orderBtn->width())/2+width*36/100,height*30/100);
-    orderBtn->setText("ABC");
+    orderBtn->setText(root.firstChildElement("orderBtn").text());
     orderBtn->setObjectName("taskCtrlBtn");
     connect(orderBtn,SIGNAL(clicked()),this,SLOT(keyboardShow()));
 
     locationBtn = new QPushButton(this);
     locationBtn->resize(width*15/100,height*6/100);
     locationBtn->move((width-locationBtn->width())/2+width*36/100,height*42/100);
-    locationBtn->setText("ABC");
+    locationBtn->setText(root.firstChildElement("locationBtn").text());
     locationBtn->setObjectName("taskCtrlBtn");
     connect(locationBtn,SIGNAL(clicked()),this,SLOT(keyboardShow()));
 
     cancelBtn = new QPushButton(this);
     cancelBtn->resize(width*26/100,height*6/100);
     cancelBtn->move((width-cancelBtn->width())/2-width*25/100,height*76/100);
-    cancelBtn->setText("Cancel");
+    cancelBtn->setText(root.firstChildElement("cancelBtn").text());
     cancelBtn->setObjectName("taskCtrlBtn");
     connect(cancelBtn,SIGNAL(clicked()),this,SLOT(close()));
 
     continueBt = new QPushButton(this);
     continueBt->resize(width*26/100,height*6/100);
     continueBt->move((width-cancelBtn->width())/2+width*27/100,height*76/100);
-    continueBt->setText("Continue");
+    continueBt->setText(root.firstChildElement("continueBt").text());
     continueBt->setObjectName("taskCtrlBtn");
     connect(continueBt,SIGNAL(clicked()),this,SLOT(insertTask()));
 
@@ -132,12 +135,12 @@ void ConsumpTaskCreate::insertTask()
          {
             if(!updateData(orderEdit->text(), locationEdit->text(), userKey, m_pri_id))
              {
-                QMessageBox::warning(this,"Input Error","Update failed!");
+                QMessageBox::warning(this,root.firstChildElement("errorTitle").text(),root.firstChildElement("error_1").text());
                 return;
              }
         }
         else {
-                QMessageBox::warning(this,"Input Error","Please Input data correctly!");
+                QMessageBox::warning(this,root.firstChildElement("errorTitle").text(),root.firstChildElement("error_2").text());
                 return;
         }
 
@@ -148,12 +151,12 @@ void ConsumpTaskCreate::insertTask()
          {
             if(!insertData(orderEdit->text(), locationEdit->text(), userKey))
             {
-                QMessageBox::warning(this,"Input Error","Order number exists already!");
+                QMessageBox::warning(this,root.firstChildElement("errorTitle").text(),root.firstChildElement("error_3").text());
                 return;
             }
          }
         else {
-            QMessageBox::warning(this,"Input Error","Please Input data correctly!");
+            QMessageBox::warning(this,root.firstChildElement("errorTitle").text(),root.firstChildElement("error_4").text());
             return;
         }
     }
@@ -179,10 +182,11 @@ bool ConsumpTaskCreate::insertData(QString oderStr, QString lctStr,int key)
        else {
          return false;
        }
-       query.prepare("INSERT INTO consump (key, order_val, location) VALUES (:key, :order_val, :location)");
+       query.prepare("INSERT INTO consump (key, order_val, location,c_time) VALUES (:key, :order_val, :location,:c_time)");
        query.bindValue(":key", key);
        query.bindValue(":order_val", oderStr);
        query.bindValue(":location", lctStr);
+       query.bindValue(":c_time", QDateTime::currentDateTime().toString("MM_dd_hh_mm"));
        if(query.exec())
        {
            return true;
@@ -196,11 +200,12 @@ bool ConsumpTaskCreate::updateData(QString oderStr, QString lctStr, int key, QSt
 //      const char *c_str2 = ba.data();
 //    __android_log_write(ANDROID_LOG_INFO,"call-------------->",c_str2);
         QSqlQuery query;
-        query.prepare("UPDATE consump SET key=:key, order_val=:order_val, location=:location WHERE pri_id=:pri_id");
+        query.prepare("UPDATE consump SET key=:key, order_val=:order_val, location=:location, c_time=:c_time WHERE pri_id=:pri_id");
         query.bindValue(":key", key);
         query.bindValue(":order_val", oderStr);
         query.bindValue(":location", lctStr);
         query.bindValue(":pri_id", pri_id.toInt());
+        query.bindValue(":c_time", QDateTime::currentDateTime().toString("MM_dd_hh_mm"));
 
         if(query.exec())
         {

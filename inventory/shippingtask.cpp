@@ -1,10 +1,10 @@
 #include "shippingtask.h"
-
+#include "extern.h"
 
 ShippingTableModel::ShippingTableModel(QObject *parent) : QAbstractTableModel(parent)
 {
 
-
+    root = doc.documentElement().firstChildElement("ShippingTaskMenu");
 }
 
 int ShippingTableModel::rowCount(const QModelIndex &) const
@@ -62,9 +62,9 @@ QVariant ShippingTableModel::headerData(int section, Qt::Orientation orientation
             switch (section)
             {
                 case 0:
-                    return QString("Tags");
+                    return QString(root.firstChildElement("taskModelCol_1").text());
                 case 1:
-                    return QString("OrderNumber");
+                    return QString(root.firstChildElement("taskModelCol_2").text());
 
             }
         }
@@ -84,6 +84,7 @@ QString ShippingTableModel::getData(int row, int columnId)
 
 void ShippingTableModel::getReadAllData(int key_id)
 {
+    beginInsertRows(QModelIndex(),0,rowCount());
     QSqlQuery query;
     query.prepare("SELECT * FROM shipping ;");
     query.exec();
@@ -102,6 +103,7 @@ void ShippingTableModel::getReadAllData(int key_id)
        }
     
     }
+    endInsertRows();
  
 }
 QString ShippingTableModel::getCSVData()
@@ -113,5 +115,13 @@ QString ShippingTableModel::getCSVData()
         data = data + table.at(i).at(0)+","+table.at(i).at(1)+","+table.at(i).at(2)+","+table.at(i).at(3)+"\n";
     }
     return data;
+
+}
+void ShippingTableModel::deleteAllData()
+{
+   table.clear();
+   QSqlQuery query;
+   query.prepare("DELETE FROM shipping");
+   query.exec();
 
 }

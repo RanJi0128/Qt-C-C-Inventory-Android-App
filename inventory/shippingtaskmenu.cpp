@@ -1,5 +1,7 @@
 #include "shippingtaskmenu.h"
 
+#include "extern.h"
+
 ShippingTaskMenu::ShippingTaskMenu(QWidget *parent,int key) : QMainWindow(parent)
 {
     QSize size = qApp->screens()[0]->size();
@@ -18,10 +20,12 @@ ShippingTaskMenu::ShippingTaskMenu(QWidget *parent,int key) : QMainWindow(parent
 }
 void ShippingTaskMenu::interface()
 {
+    root = doc.documentElement().firstChildElement("ShippingTaskMenu");
+
     pageTitle = new QLabel(this);
     pageTitle->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     pageTitle->setAlignment(Qt::AlignHCenter);
-    pageTitle->setText("Shipping Jobs/Units");
+    pageTitle->setText(root.firstChildElement("pageTitle").text());
     pageTitle->setObjectName("title");
     pageTitle->setGeometry(0,height*11/100,width,height*6/100);
 
@@ -30,7 +34,7 @@ void ShippingTaskMenu::interface()
     taskMenu = new QTableView(this);
     taskMenu->setModel(&table);
     taskMenu->resize(width-30,height*70/100);
-    taskMenu->move((width-taskMenu->width())/2,pageTitle->y()+pageTitle->height()+50);
+    taskMenu->move((width-taskMenu->width())/2,pageTitle->y()+pageTitle->height()+15);
     taskMenu->horizontalHeader()->setStretchLastSection(true);
     taskMenu->verticalHeader()->hide();
     taskMenu->setEditTriggers(QAbstractItemView::NoEditTriggers);
@@ -43,14 +47,14 @@ void ShippingTaskMenu::interface()
     menuBtn = new QPushButton(this);
     menuBtn->resize(width*19/100,height*6/100);
     menuBtn->move((width-menuBtn->width())/2-width*38/100,height*90/100);
-    menuBtn->setText("Menu");
+    menuBtn->setText(root.firstChildElement("menuBtn").text());
     menuBtn->setObjectName("taskCtrlBtn");
     connect(menuBtn,SIGNAL(clicked()),this,SLOT(menuShow()));
 
     deleteBtn = new QPushButton(this);
     deleteBtn->resize(width*19/100,height*6/100);
     deleteBtn->move((width-deleteBtn->width())/2-width*13/100,height*90/100);
-    deleteBtn->setText("Del");
+    deleteBtn->setText(root.firstChildElement("deleteBtn").text());
     deleteBtn->setObjectName("taskCtrlBtn");
     deleteBtn->setEnabled(0);
     connect(deleteBtn,SIGNAL(clicked()),this,SLOT(deleteConfirm()));
@@ -58,7 +62,7 @@ void ShippingTaskMenu::interface()
     editBtn = new QPushButton(this);
     editBtn->resize(width*19/100,height*6/100);
     editBtn->move((width-editBtn->width())/2+width*13/100,height*90/100);
-    editBtn->setText("Edit");
+    editBtn->setText(root.firstChildElement("edit").text());
     editBtn->setObjectName("taskCtrlBtn");
     editBtn->setEnabled(0);
     connect(editBtn,SIGNAL(clicked()),this,SLOT(editShow()));
@@ -66,7 +70,7 @@ void ShippingTaskMenu::interface()
     createBtn = new QPushButton(this);
     createBtn->resize(width*19/100,height*6/100);
     createBtn->move((width-createBtn->width())/2+width*38/100,height*90/100);
-    createBtn->setText("Create");
+    createBtn->setText(root.firstChildElement("create").text());
     createBtn->setObjectName("taskCtrlBtn");
     if(permission[0])
      createBtn->setEnabled(1);
@@ -83,7 +87,7 @@ void ShippingTaskMenu::menuShow()
 void ShippingTaskMenu::deleteConfirm()
 {
 
-    int res = QMessageBox::warning(this,"Delete Confirm!","Would you delete really ?",QMessageBox::Ok,QMessageBox::Cancel);
+    int res = QMessageBox::warning(this,root.firstChildElement("delConfirmTitle").text(),root.firstChildElement("delConfirmText").text(),QMessageBox::Ok,QMessageBox::Cancel);
 
     if(res==QMessageBox::Ok)
     {
@@ -127,9 +131,13 @@ void ShippingTaskMenu::editShow()
     editBtn->setEnabled(0);
     deleteBtn->setEnabled(0);
 
-    createTaskView = new ShippingTaskCreate(userKey,table.getData(rowNum,0),"Edit",table.getData(rowNum,2),table.getData(rowNum,3),this);
+    createTaskView = new ShippingTaskCreate(userKey,table.getData(rowNum,0),root.firstChildElement("edit").text(),table.getData(rowNum,2),table.getData(rowNum,3),this);
     createTaskView->table = &table;
-    createTaskView->showFullScreen();
+    if(this->isFullScreen())
+     createTaskView->showFullScreen();
+    else {
+        createTaskView->show();
+    }
 }
 
 void ShippingTaskMenu::createShow()
@@ -138,9 +146,13 @@ void ShippingTaskMenu::createShow()
     editBtn->setEnabled(0);
     deleteBtn->setEnabled(0);
 
-    createTaskView = new ShippingTaskCreate(userKey,"Create",this);
+    createTaskView = new ShippingTaskCreate(userKey,root.firstChildElement("create").text(),this);
     createTaskView->table = &table;
+   if(this->isFullScreen())
     createTaskView->showFullScreen();
+   else {
+       createTaskView->show();
+   }
 }
 
 bool ShippingTaskMenu::deleteData(QString pri_id)
@@ -159,12 +171,5 @@ bool ShippingTaskMenu::deleteData(QString pri_id)
 
         return false;
 }
-void ShippingTaskMenu::deleteAllData()
-{
-   table.table.clear();
-   QSqlQuery query;
-   query.prepare("DELETE FROM shipping");
-   query.exec();
 
-}
 
