@@ -30,7 +30,44 @@ ShippingTaskCreate::ShippingTaskCreate(int key, QString title,QWidget *parent) :
     State=Create;
     interface();
 }
+void ShippingTaskCreate::resizeEvent(QResizeEvent *event)
+{
+    QSize size = event->size();
+    width = size.width();
+    height = size.height();
 
+    objectGeometry();
+}
+void ShippingTaskCreate::objectGeometry()
+{
+    pageTitle->setGeometry(0,height*11/100,width,height*6/100);
+
+    orderLabel->resize(width*29/100,height*4/100);
+    orderLabel->move((width-orderLabel->width())/2-width*30/100,height*26/100);
+
+    orderEdit->resize(width*69/100,height*6/100);
+    orderEdit->move((width-orderEdit->width())/2-width*7/100,height*30/100);
+
+    shipLabel->resize(width*29/100,height*4/100);
+    shipLabel->move((width-shipLabel->width())/2-width*38/100,height*37/100);
+
+    shipEdit->resize(width*69/100,height*6/100);
+    shipEdit->move((width-shipEdit->width())/2-width*7/100,height*42/100);
+
+    orderBtn->resize(width*15/100,height*6/100);
+    orderBtn->move((width-orderBtn->width())/2+width*36/100,height*30/100);
+
+    shipBtn->resize(width*15/100,height*6/100);
+    shipBtn->move((width-shipBtn->width())/2+width*36/100,height*42/100);
+
+    cancelBtn->resize(width*26/100,height*6/100);
+    cancelBtn->move((width-cancelBtn->width())/2-width*25/100,height*76/100);
+
+    continueBt->resize(width*26/100,height*6/100);
+    continueBt->move((width-cancelBtn->width())/2+width*27/100,height*76/100);
+
+
+}
 void ShippingTaskCreate::interface()
 {
     root = doc.documentElement().firstChildElement("ShippingTaskCreate");
@@ -40,21 +77,17 @@ void ShippingTaskCreate::interface()
     pageTitle->setAlignment(Qt::AlignHCenter);
     pageTitle->setText(root.firstChildElement("pageTitle").text()+" "+wtitle);
     pageTitle->setObjectName("title");
-    pageTitle->setGeometry(0,height*11/100,width,height*6/100);
+
 
     orderLabel = new QLabel(this);
     orderLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     orderLabel->setAlignment(Qt::AlignHCenter);
     orderLabel->setText(root.firstChildElement("orderLabel").text());
     orderLabel->setObjectName("taskLabel");
-    orderLabel->resize(width*29/100,height*4/100);
-    orderLabel->move((width-orderLabel->width())/2-width*30/100,height*26/100);
 
     QPixmap pixmap("assets:/clear.png");
     orderEdit = new LineEdit(pixmap,2,this);
-    orderEdit->setPlaceholderText(root.firstChildElement("orderEdit").text());
-    orderEdit->resize(width*69/100,height*6/100);
-    orderEdit->move((width-orderEdit->width())/2-width*7/100,height*30/100);
+    orderEdit->setPlaceholderText(root.firstChildElement("orderEdit").text());    
     orderEdit->setObjectName("inputEdit");
     orderEdit->installEventFilter(this);
     if(State==Edit)
@@ -65,45 +98,35 @@ void ShippingTaskCreate::interface()
     shipLabel->setAlignment(Qt::AlignHCenter);
     shipLabel->setText(root.firstChildElement("shipLabel").text());
     shipLabel->setObjectName("taskLabel");
-    shipLabel->resize(width*29/100,height*4/100);
-    shipLabel->move((width-shipLabel->width())/2-width*38/100,height*37/100);
 
     shipEdit = new LineEdit(pixmap,2,this);
-    shipEdit->setPlaceholderText(root.firstChildElement("shipEdit").text());
-    shipEdit->resize(width*69/100,height*6/100);
-    shipEdit->move((width-shipEdit->width())/2-width*7/100,height*42/100);
+    shipEdit->setPlaceholderText(root.firstChildElement("shipEdit").text());    
     shipEdit->setObjectName("inputEdit");
     shipEdit->installEventFilter(this);
     if(State==Edit)
         shipEdit->setText(m_ship);
 
-    orderBtn = new QPushButton(this);
-    orderBtn->resize(width*15/100,height*6/100);
-    orderBtn->move((width-orderBtn->width())/2+width*36/100,height*30/100);
+    orderBtn = new QPushButton(this);    
     orderBtn->setText(root.firstChildElement("orderBtn").text());
     orderBtn->setObjectName("taskCtrlBtn");
     connect(orderBtn,SIGNAL(clicked()),this,SLOT(keyboardShow()));
 
-    shipBtn = new QPushButton(this);
-    shipBtn->resize(width*15/100,height*6/100);
-    shipBtn->move((width-shipBtn->width())/2+width*36/100,height*42/100);
+    shipBtn = new QPushButton(this);    
     shipBtn->setText(root.firstChildElement("shipBtn").text());
     shipBtn->setObjectName("taskCtrlBtn");
     connect(shipBtn,SIGNAL(clicked()),this,SLOT(keyboardShow()));
 
-    cancelBtn = new QPushButton(this);
-    cancelBtn->resize(width*26/100,height*6/100);
-    cancelBtn->move((width-cancelBtn->width())/2-width*25/100,height*76/100);
+    cancelBtn = new QPushButton(this);    
     cancelBtn->setText(root.firstChildElement("cancelBtn").text());
     cancelBtn->setObjectName("taskCtrlBtn");
     connect(cancelBtn,SIGNAL(clicked()),this,SLOT(close()));
 
-    continueBt = new QPushButton(this);
-    continueBt->resize(width*26/100,height*6/100);
-    continueBt->move((width-cancelBtn->width())/2+width*27/100,height*76/100);
+    continueBt = new QPushButton(this);    
     continueBt->setText(root.firstChildElement("continueBt").text());
     continueBt->setObjectName("taskCtrlBtn");
     connect(continueBt,SIGNAL(clicked()),this,SLOT(insertTask()));
+
+    objectGeometry();
 
 }
 void ShippingTaskCreate::insertTask()

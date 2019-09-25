@@ -12,7 +12,8 @@ class InventoryTaskMenu : public QMainWindow
 public:
     explicit InventoryTaskMenu(QWidget *parent = nullptr,int key=0);
 
-
+    void resizeEvent(QResizeEvent *event)override;
+    void objectGeometry();
     bool deleteData(QString pri_id);
 
 

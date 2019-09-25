@@ -35,7 +35,8 @@ class UserManger : public QMainWindow
     Q_OBJECT
 public:
     explicit UserManger(QWidget *parent = nullptr);
-
+    void resizeEvent(QResizeEvent *event)override;
+    void objectGeometry();
     QLabel *titleLabel;
     QLabel *usernameLabel;
     QLabel *passwordLabel;

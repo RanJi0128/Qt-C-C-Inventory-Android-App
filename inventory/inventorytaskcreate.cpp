@@ -41,22 +41,18 @@ void InventoryTaskCreate::interface()
     pageTitle->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     pageTitle->setAlignment(Qt::AlignHCenter);
     pageTitle->setText(root.firstChildElement("pageTitle").text()+" "+wtitle);
-    pageTitle->setObjectName("title");
-    pageTitle->setGeometry(0,height*11/100,width,height*6/100);
+    pageTitle->setObjectName("title");    
 
     phycalLabel = new QLabel(this);
     phycalLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     phycalLabel->setAlignment(Qt::AlignHCenter);
     phycalLabel->setText(root.firstChildElement("phycalLabel").text());
     phycalLabel->setObjectName("taskLabel");
-    phycalLabel->resize(width*32/100,height*4/100);
-    phycalLabel->move((width-phycalLabel->width())/2-width*29/100,height*22/100);
+
 
     QPixmap pixmap("assets:/clear.png");
     phycalEdit = new LineEdit(pixmap,2,this);
-    phycalEdit->setPlaceholderText(root.firstChildElement("phycalEdit").text());
-    phycalEdit->resize(width*69/100,height*6/100);
-    phycalEdit->move((width-phycalEdit->width())/2-width*7/100,height*25/100);
+    phycalEdit->setPlaceholderText(root.firstChildElement("phycalEdit").text());    
     phycalEdit->setObjectName("inputEdit");
     phycalEdit->installEventFilter(this);
     if(State==Edit)
@@ -66,30 +62,22 @@ void InventoryTaskCreate::interface()
     locationLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     locationLabel->setAlignment(Qt::AlignHCenter);
     locationLabel->setText(root.firstChildElement("locationLabel").text());
-    locationLabel->setObjectName("taskLabel");
-    locationLabel->resize(width*29/100,height*4/100);
-    locationLabel->move((width-locationLabel->width())/2-width*36/100,height*33/100);
+    locationLabel->setObjectName("taskLabel");    
 
     locationEdit = new LineEdit(pixmap,2,this);
-    locationEdit->setPlaceholderText(root.firstChildElement("locationEdit").text());
-    locationEdit->resize(width*69/100,height*6/100);
-    locationEdit->move((width-locationEdit->width())/2-width*7/100,height*36/100);
+    locationEdit->setPlaceholderText(root.firstChildElement("locationEdit").text());    
     locationEdit->setObjectName("inputEdit");
     locationEdit->installEventFilter(this);
     if(State==Edit)
         locationEdit->setText(m_location);
 
-    physicalBtn = new QPushButton(this);
-    physicalBtn->resize(width*15/100,height*6/100);
-    physicalBtn->move((width-physicalBtn->width())/2+width*36/100,height*25/100);
+    physicalBtn = new QPushButton(this);    
     physicalBtn->setText(root.firstChildElement("physicalBtn").text());
     physicalBtn->setObjectName("taskCtrlBtn");
     connect(physicalBtn,SIGNAL(clicked()),this,SLOT(keyboardShow()));
 
 
-    locationBtn = new QPushButton(this);
-    locationBtn->resize(width*15/100,height*6/100);
-    locationBtn->move((width-locationBtn->width())/2+width*36/100,height*36/100);
+    locationBtn = new QPushButton(this);    
     locationBtn->setText(root.firstChildElement("locationBtn").text());
     locationBtn->setObjectName("taskCtrlBtn");
     connect(locationBtn,SIGNAL(clicked()),this,SLOT(keyboardShow()));
@@ -98,39 +86,77 @@ void InventoryTaskCreate::interface()
     sublocationLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     sublocationLabel->setAlignment(Qt::AlignHCenter);
     sublocationLabel->setText(root.firstChildElement("sublocationLabel").text());
-    sublocationLabel->setObjectName("taskLabel");
-    sublocationLabel->resize(width*29/100,height*4/100);
-    sublocationLabel->move((width-sublocationLabel->width())/2-width*31/100,height*44/100);
+    sublocationLabel->setObjectName("taskLabel");    
 
     sublocationEdit = new LineEdit(pixmap,2,this);
-    sublocationEdit->setPlaceholderText(root.firstChildElement("sublocationEdit").text());
-    sublocationEdit->resize(width*69/100,height*6/100);
-    sublocationEdit->move((width-sublocationEdit->width())/2-width*7/100,height*47/100);
+    sublocationEdit->setPlaceholderText(root.firstChildElement("sublocationEdit").text());    
     sublocationEdit->setObjectName("inputEdit");
     sublocationEdit->installEventFilter(this);
     if(State==Edit)
         sublocationEdit->setText(m_sublocation);
 
-    sublocationBtn = new QPushButton(this);
-    sublocationBtn->resize(width*15/100,height*6/100);
-    sublocationBtn->move((width-sublocationBtn->width())/2+width*36/100,height*47/100);
+    sublocationBtn = new QPushButton(this);    
     sublocationBtn->setText(root.firstChildElement("sublocationBtn").text());
     sublocationBtn->setObjectName("taskCtrlBtn");
     connect(sublocationBtn,SIGNAL(clicked()),this,SLOT(keyboardShow()));
 
-    cancelBtn = new QPushButton(this);
-    cancelBtn->resize(width*26/100,height*6/100);
-    cancelBtn->move((width-cancelBtn->width())/2-width*25/100,height*76/100);
+    cancelBtn = new QPushButton(this);    
     cancelBtn->setText(root.firstChildElement("cancelBtn").text());
     cancelBtn->setObjectName("taskCtrlBtn");
     connect(cancelBtn,SIGNAL(clicked()),this,SLOT(close()));
 
-    continueBt = new QPushButton(this);
-    continueBt->resize(width*26/100,height*6/100);
-    continueBt->move((width-cancelBtn->width())/2+width*27/100,height*76/100);
+    continueBt = new QPushButton(this);    
     continueBt->setText(root.firstChildElement("continueBt").text());
     continueBt->setObjectName("taskCtrlBtn");
     connect(continueBt,SIGNAL(clicked()),this,SLOT(insertTask()));
+
+    objectGeometry();
+
+}
+void InventoryTaskCreate::resizeEvent(QResizeEvent *event)
+{
+    QSize size = event->size();
+    width = size.width();
+    height = size.height();
+
+    objectGeometry();
+}
+void InventoryTaskCreate::objectGeometry()
+{
+    pageTitle->setGeometry(0,height*11/100,width,height*6/100);
+
+    phycalLabel->resize(width*32/100,height*4/100);
+    phycalLabel->move((width-phycalLabel->width())/2-width*29/100,height*22/100);
+
+    phycalEdit->resize(width*69/100,height*6/100);
+    phycalEdit->move((width-phycalEdit->width())/2-width*7/100,height*25/100);
+
+    locationLabel->resize(width*29/100,height*4/100);
+    locationLabel->move((width-locationLabel->width())/2-width*36/100,height*33/100);
+
+    locationEdit->resize(width*69/100,height*6/100);
+    locationEdit->move((width-locationEdit->width())/2-width*7/100,height*36/100);
+
+    physicalBtn->resize(width*15/100,height*6/100);
+    physicalBtn->move((width-physicalBtn->width())/2+width*36/100,height*25/100);
+
+    locationBtn->resize(width*15/100,height*6/100);
+    locationBtn->move((width-locationBtn->width())/2+width*36/100,height*36/100);
+
+    sublocationLabel->resize(width*29/100,height*4/100);
+    sublocationLabel->move((width-sublocationLabel->width())/2-width*31/100,height*44/100);
+
+    sublocationEdit->resize(width*69/100,height*6/100);
+    sublocationEdit->move((width-sublocationEdit->width())/2-width*7/100,height*47/100);
+
+    sublocationBtn->resize(width*15/100,height*6/100);
+    sublocationBtn->move((width-sublocationBtn->width())/2+width*36/100,height*47/100);
+
+    cancelBtn->resize(width*26/100,height*6/100);
+    cancelBtn->move((width-cancelBtn->width())/2-width*25/100,height*76/100);
+
+    continueBt->resize(width*26/100,height*6/100);
+    continueBt->move((width-cancelBtn->width())/2+width*27/100,height*76/100);
 
 }
 void InventoryTaskCreate::keyboardShow()

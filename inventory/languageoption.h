@@ -7,7 +7,8 @@ class LanguageOption : public QMainWindow
     Q_OBJECT
 public:
     explicit LanguageOption(QWidget *parent = nullptr);
-
+    void resizeEvent(QResizeEvent *event)override;
+    void objectGeometry();
     QLabel* pageTitle;
     QDomElement root;
 

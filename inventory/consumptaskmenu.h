@@ -12,6 +12,8 @@ class ConsumpTaskMenu : public QMainWindow
 public:
     explicit ConsumpTaskMenu(QWidget *parent = nullptr,int key=0);
 
+    void resizeEvent(QResizeEvent *event);
+    void objectGeometry();
 
     bool deleteData(QString pri_id);
 

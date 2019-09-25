@@ -19,10 +19,19 @@ MainWindow::MainWindow(int dbState,QWidget *parent) : QMainWindow(parent)
   loadXml();
   interface();
 
+
 }
 MainWindow::~MainWindow()
 {
     mainTimer->stop();
+}
+void MainWindow::resizeEvent(QResizeEvent *event)
+{
+    QSize size = event->size();
+    width = size.width();
+    height = size.height();
+
+    objectGeometry();
 }
 void MainWindow::loadXml()
 {
@@ -49,27 +58,20 @@ void MainWindow::interface()
 
     mainTitle = new QLabel(this);    
     mainTitle->setText(root.firstChildElement("mainTitle").text());
-    mainTitle->setAlignment(Qt::AlignCenter);
-    mainTitle->setGeometry(0,height*11/100,width,height*6/100);
+    mainTitle->setAlignment(Qt::AlignCenter);   
     mainTitle->setObjectName("title");
 
     taskLabel = new QLabel(this);
     taskLabel->setText(root.firstChildElement("taskLabel").text());
     taskLabel->setAlignment(Qt::AlignCenter);
-    taskLabel->resize(width*46/100,height*6/100);
-    taskLabel->move((width-taskLabel->width())/2,height*37/100);
     taskLabel->setObjectName("taskLabel");
 
     loginBtn = new QPushButton(this);
-    loginBtn->resize(width*80/100,height*8/100);
-    loginBtn->move((width-loginBtn->width())/2,height*24/100);
     loginBtn->setText(root.firstChildElement("loginBtn").text());
     loginBtn->setObjectName("loginBtn");
     connect(loginBtn,SIGNAL(clicked()),this,SLOT(loginPageShow()));
 
-    task_control= new MyComboBox(this);
-    task_control->resize(width*61/100,height*8/100);
-    task_control->move((width-task_control->width())/2,height*44/100);
+    task_control= new MyComboBox(this);    
     task_control->setEnabled(0);
     task_control->setObjectName("taskCtrl");
 
@@ -80,38 +82,31 @@ void MainWindow::interface()
 
     task_control->setModel(taskModel);
 
-    downloadBtn = new QPushButton(this);
-    downloadBtn->resize(width*32/100,height*16/100);
-    downloadBtn->move((width-downloadBtn->width())/2-downloadBtn->width()*73/100,height*59/100);
+    downloadBtn = new QPushButton(this);  
     downloadBtn->setText(root.firstChildElement("downloadBtn").text());
     downloadBtn->setObjectName("controlBtn");
     downloadBtn->setEnabled(0);
     connect(downloadBtn,SIGNAL(clicked()),this,SLOT(downloadFile()));
 
     scanBtn = new QPushButton(this);
-    scanBtn->resize(width*32/100,height*16/100);
-    scanBtn->move((width-scanBtn->width())/2+scanBtn->width()*73/100,height*59/100);
     scanBtn->setText(root.firstChildElement("scanBtn").text());
     scanBtn->setObjectName("controlBtn");
     scanBtn->setEnabled(0);
     connect(scanBtn,SIGNAL(clicked()),this,SLOT(taskShow()));
 
-    purgeBtn = new QPushButton(this);
-    purgeBtn->resize(width*32/100,height*16/100);
-    purgeBtn->move((width-purgeBtn->width())/2-purgeBtn->width()*73/100,height*80/100);
+    purgeBtn = new QPushButton(this);    
     purgeBtn->setText(root.firstChildElement("purgeBtn").text());
     purgeBtn->setObjectName("controlBtn");
     purgeBtn->setEnabled(0);
     connect(purgeBtn,SIGNAL(clicked()),this,SLOT(dataDelDlg()));
 
-    optionBtn = new QPushButton(this);
-    optionBtn->resize(width*32/100,height*16/100);
-    optionBtn->move((width-optionBtn->width())/2+optionBtn->width()*73/100,height*80/100);
+    optionBtn = new QPushButton(this);    
     optionBtn->setText(root.firstChildElement("optionBtn").text());
     optionBtn->setObjectName("controlBtn");
     optionBtn->setEnabled(0);
     connect(optionBtn,SIGNAL(clicked()),this,SLOT(optionsShow()));
 
+    objectGeometry();
     for (int i=0;i<4;i++) {
         m_permission[i]=false;       
     }
@@ -120,6 +115,33 @@ void MainWindow::interface()
     mainTimer = new QTimer(this);
     mainTimer->start(300);
     connect(mainTimer,SIGNAL(timeout()),this,SLOT(backgroundTransfer()));
+
+}
+void MainWindow::objectGeometry()
+{
+    mainTitle->setGeometry(0,height*11/100,width,height*6/100);
+
+    taskLabel->resize(width*46/100,height*6/100);
+    taskLabel->move((width-taskLabel->width())/2,height*37/100);
+
+    loginBtn->resize(width*80/100,height*8/100);
+    loginBtn->move((width-loginBtn->width())/2,height*24/100);
+
+    task_control->resize(width*61/100,height*8/100);
+    task_control->move((width-task_control->width())/2,height*44/100);
+
+    downloadBtn->resize(width*32/100,height*16/100);
+    downloadBtn->move((width-downloadBtn->width())/2-downloadBtn->width()*73/100,height*59/100);
+
+    scanBtn->resize(width*32/100,height*16/100);
+    scanBtn->move((width-scanBtn->width())/2+scanBtn->width()*73/100,height*59/100);
+
+    purgeBtn->resize(width*32/100,height*16/100);
+    purgeBtn->move((width-purgeBtn->width())/2-purgeBtn->width()*73/100,height*80/100);
+
+    optionBtn->resize(width*32/100,height*16/100);
+    optionBtn->move((width-optionBtn->width())/2+optionBtn->width()*73/100,height*80/100);
+
 
 }
 void MainWindow::backgroundTransfer()

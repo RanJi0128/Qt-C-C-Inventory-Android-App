@@ -17,7 +17,8 @@ public:
              bool insertData(QString oderStr, QString shipStr,int key);
              bool updateData(QString oderStr, QString shipStr,int key, QString pri_id);
 
-
+             void resizeEvent(QResizeEvent *event);
+             void objectGeometry();
     enum STATE{Create,Edit}State;
     QLabel* pageTitle;
     QLabel* orderLabel;

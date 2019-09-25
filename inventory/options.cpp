@@ -26,15 +26,13 @@ void Options::interface()
     languageOption = new LanguageOption(this);
     stateOption = new StateOption(this,m->userKey);
 
+    objectGeometry();
     setCentralWidget(optionTabs);
     //optionTabs->setFixedSize(width,height);
     optionTabs->addTab(generalOption,root.firstChildElement("optionTab_1").text());
     optionTabs->addTab(advancedOption,root.firstChildElement("optionTab_2").text());
     optionTabs->addTab(languageOption,root.firstChildElement("optionTab_3").text());
     optionTabs->addTab(stateOption,root.firstChildElement("optionTab_4").text());
-
-    QString sheet ="QTabBar::tab { height: %1px; width: %2px; }";
-    optionTabs->setStyleSheet(sheet.arg(this->height/20).arg(this->width/4));
 
     connect(generalOption,SIGNAL(winClose()),this,SLOT(winClose()));
     connect(advancedOption,SIGNAL(winClose()),this,SLOT(winClose()));
@@ -59,6 +57,19 @@ void Options::interface()
     advancedOption->time_control->setCurrentIndex(m->logoffTime==0 ? 9 : (m->logoffTime-5)/5);
 
 
+}
+void Options::resizeEvent(QResizeEvent *event)
+{
+    QSize size = event->size();
+    width = size.width();
+    height = size.height();
+
+    objectGeometry();
+}
+void Options::objectGeometry()
+{
+    QString sheet ="QTabBar::tab { height: %1px; width: %2px; }";
+    optionTabs->setStyleSheet(sheet.arg(this->height/20).arg(this->width/4));
 }
 void Options::winClose()
 {

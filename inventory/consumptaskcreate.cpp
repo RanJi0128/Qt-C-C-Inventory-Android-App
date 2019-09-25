@@ -30,7 +30,45 @@ ConsumpTaskCreate::ConsumpTaskCreate(int key, QString title,QWidget *parent) : Q
     State=Create;
     interface();
 }
+void ConsumpTaskCreate::resizeEvent(QResizeEvent *event)
+{
+    QSize size = event->size();
+    width = size.width();
+    height = size.height();
 
+    objectGeometry();
+}
+void ConsumpTaskCreate::objectGeometry()
+{
+    pageTitle->setGeometry(0,height*11/100,width,height*6/100);
+
+    orderLabel->resize(width*29/100,height*4/100);
+    orderLabel->move((width-orderLabel->width())/2-width*30/100,height*26/100);
+
+    orderEdit->resize(width*69/100,height*6/100);
+    orderEdit->move((width-orderEdit->width())/2-width*7/100,height*30/100);
+
+    locationLabel->resize(width*29/100,height*4/100);
+    locationLabel->move((width-locationLabel->width())/2-width*30/100,height*37/100);
+
+    locationEdit->resize(width*69/100,height*6/100);
+    locationEdit->move((width-locationEdit->width())/2-width*7/100,height*42/100);
+
+    orderBtn->resize(width*15/100,height*6/100);
+    orderBtn->move((width-orderBtn->width())/2+width*36/100,height*30/100);
+
+    locationBtn->resize(width*15/100,height*6/100);
+    locationBtn->move((width-locationBtn->width())/2+width*36/100,height*42/100);
+
+    cancelBtn->resize(width*26/100,height*6/100);
+    cancelBtn->move((width-cancelBtn->width())/2-width*25/100,height*76/100);
+
+    continueBt->resize(width*26/100,height*6/100);
+    continueBt->move((width-cancelBtn->width())/2+width*27/100,height*76/100);
+
+
+
+}
 void ConsumpTaskCreate::interface()
 {
     root = doc.documentElement().firstChildElement("ConsumpTaskCreate");
@@ -40,21 +78,17 @@ void ConsumpTaskCreate::interface()
     pageTitle->setAlignment(Qt::AlignHCenter);
     pageTitle->setText(root.firstChildElement("pageTitle").text()+" "+wtitle);
     pageTitle->setObjectName("title");
-    pageTitle->setGeometry(0,height*11/100,width,height*6/100);
+
 
     orderLabel = new QLabel(this);
     orderLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     orderLabel->setAlignment(Qt::AlignHCenter);
     orderLabel->setText(root.firstChildElement("orderLabel").text());
     orderLabel->setObjectName("taskLabel");
-    orderLabel->resize(width*29/100,height*4/100);
-    orderLabel->move((width-orderLabel->width())/2-width*30/100,height*26/100);
 
     QPixmap pixmap("assets:/clear.png");
     orderEdit = new LineEdit(pixmap,2,this);
-    orderEdit->setPlaceholderText(root.firstChildElement("orderEdit").text());
-    orderEdit->resize(width*69/100,height*6/100);
-    orderEdit->move((width-orderEdit->width())/2-width*7/100,height*30/100);
+    orderEdit->setPlaceholderText(root.firstChildElement("orderEdit").text());    
     orderEdit->setObjectName("inputEdit");
     orderEdit->installEventFilter(this);
     if(State==Edit)
@@ -65,45 +99,36 @@ void ConsumpTaskCreate::interface()
     locationLabel->setAlignment(Qt::AlignHCenter);
     locationLabel->setText(root.firstChildElement("locationLabel").text());
     locationLabel->setObjectName("taskLabel");
-    locationLabel->resize(width*29/100,height*4/100);
-    locationLabel->move((width-locationLabel->width())/2-width*30/100,height*37/100);
+
 
     locationEdit = new LineEdit(pixmap,2,this);
-    locationEdit->setPlaceholderText(root.firstChildElement("locationEdit").text());
-    locationEdit->resize(width*69/100,height*6/100);
-    locationEdit->move((width-locationEdit->width())/2-width*7/100,height*42/100);
+    locationEdit->setPlaceholderText(root.firstChildElement("locationEdit").text());    
     locationEdit->setObjectName("inputEdit");
     locationEdit->installEventFilter(this);
     if(State==Edit)
         locationEdit->setText(m_location);
 
-    orderBtn = new QPushButton(this);
-    orderBtn->resize(width*15/100,height*6/100);
-    orderBtn->move((width-orderBtn->width())/2+width*36/100,height*30/100);
+    orderBtn = new QPushButton(this);    
     orderBtn->setText(root.firstChildElement("orderBtn").text());
     orderBtn->setObjectName("taskCtrlBtn");
     connect(orderBtn,SIGNAL(clicked()),this,SLOT(keyboardShow()));
 
-    locationBtn = new QPushButton(this);
-    locationBtn->resize(width*15/100,height*6/100);
-    locationBtn->move((width-locationBtn->width())/2+width*36/100,height*42/100);
+    locationBtn = new QPushButton(this);    
     locationBtn->setText(root.firstChildElement("locationBtn").text());
     locationBtn->setObjectName("taskCtrlBtn");
     connect(locationBtn,SIGNAL(clicked()),this,SLOT(keyboardShow()));
 
-    cancelBtn = new QPushButton(this);
-    cancelBtn->resize(width*26/100,height*6/100);
-    cancelBtn->move((width-cancelBtn->width())/2-width*25/100,height*76/100);
+    cancelBtn = new QPushButton(this);    
     cancelBtn->setText(root.firstChildElement("cancelBtn").text());
     cancelBtn->setObjectName("taskCtrlBtn");
     connect(cancelBtn,SIGNAL(clicked()),this,SLOT(close()));
 
-    continueBt = new QPushButton(this);
-    continueBt->resize(width*26/100,height*6/100);
-    continueBt->move((width-cancelBtn->width())/2+width*27/100,height*76/100);
+    continueBt = new QPushButton(this);    
     continueBt->setText(root.firstChildElement("continueBt").text());
     continueBt->setObjectName("taskCtrlBtn");
     connect(continueBt,SIGNAL(clicked()),this,SLOT(insertTask()));
+
+    objectGeometry();
 
 
 }

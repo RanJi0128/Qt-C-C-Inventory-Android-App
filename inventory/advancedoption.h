@@ -10,6 +10,8 @@ class AdvancedOption : public QMainWindow
     Q_OBJECT
 public:
     explicit AdvancedOption(QWidget *parent = nullptr);
+    void resizeEvent(QResizeEvent *event);
+    void objectGeometry();
 
     QLabel* pageTitle;
     QLabel *explainLabel;

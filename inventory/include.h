@@ -30,5 +30,6 @@
 #include <QTimer>
 #include <QCheckBox>
 #include <QDomDocument>
+#include <QResizeEvent>
 
 #endif // INCLUDE_H

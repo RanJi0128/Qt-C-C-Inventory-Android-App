@@ -9,7 +9,8 @@ class StateOption : public QMainWindow
     Q_OBJECT
 public:
     explicit StateOption(QWidget *parent = nullptr,int key=0);
-
+    void resizeEvent(QResizeEvent *event)override;
+    void objectGeometry();
     QLabel* pageTitle;
     QTableView *taskMenu;
     DownloadStateModel table;

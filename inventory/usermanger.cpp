@@ -80,7 +80,6 @@ UserManger::UserManger(QWidget *parent) : QMainWindow(parent)
     table.clear();
 
     m = static_cast<MainWindow*>(parent);
-
     interface();
 }
 
@@ -92,63 +91,87 @@ void UserManger::interface()
     titleLabel = new QLabel(this);
     titleLabel->setText(root.firstChildElement("titleLabel").text());
     titleLabel->setAlignment(Qt::AlignCenter);
-    titleLabel->setGeometry(0,height*11/100,width,height*6/100);
     titleLabel->setObjectName("title");
 
     usernameLabel = new QLabel(this);
     usernameLabel->setText(root.firstChildElement("usernameLabel").text());
-    usernameLabel->setAlignment(Qt::AlignCenter);
-    usernameLabel->resize(width*28/100,height*6/100);
-    usernameLabel->move((width-usernameLabel->width())/2-width*27/100,height*24/100);
+    usernameLabel->setAlignment(Qt::AlignCenter);    
     usernameLabel->setObjectName("userInfo");
 
     passwordLabel = new QLabel(this);
     passwordLabel->setText(root.firstChildElement("passwordLabel").text());
-    passwordLabel->setAlignment(Qt::AlignCenter);
-    passwordLabel->resize(width*29/100,height*6/100);
-    passwordLabel->move((width-passwordLabel->width())/2-width*27/100,height*37/100);
+    passwordLabel->setAlignment(Qt::AlignCenter);    
     passwordLabel->setObjectName("userInfo");
 
     QPixmap pixmap("assets:/hide.png");
     passwdEdit = new LineEdit(pixmap,1,this);
-    passwdEdit->setPlaceholderText(root.firstChildElement("passwdEdit").text());
-    passwdEdit->resize(width*50/100,height*6/100);
-    passwdEdit->move((width-passwdEdit->width())/2+width*15/100,height*37/100);
+    passwdEdit->setPlaceholderText(root.firstChildElement("passwdEdit").text());    
     passwdEdit->setEchoMode(QLineEdit::Password);
     passwdEdit->setObjectName("inputEdit");
 
-    user_control= new MyComboBox(this);
-    user_control->resize(width*50/100,height*6/100);
-    user_control->move((width-user_control->width())/2+width*15/100,height*24/100);
+    user_control= new MyComboBox(this);    
     user_control->setObjectName("userCtl");
     connect(user_control,SIGNAL(currentIndexChanged(int)),this,SLOT(moveFocus()));
 
     explainLabel = new QLabel(this);
     explainLabel->setText(root.firstChildElement("explainLabel_1").text()+"\n"+root.firstChildElement("explainLabel_2").text());
-    explainLabel->setAlignment(Qt::AlignCenter);
-    explainLabel->setGeometry(0,height*48/100,width,height*11/100);
+    explainLabel->setAlignment(Qt::AlignCenter);    
     explainLabel->setObjectName("explain");
 
-    okBtn = new QPushButton(this);
-    okBtn->resize(width*27/100,height*7/100);
-    okBtn->move((width-okBtn->width())/2-width*21/100,height*77/100);
+    okBtn = new QPushButton(this);    
     okBtn->setText(root.firstChildElement("okBtn").text());
     okBtn->setObjectName("confirmBtn");
     connect(okBtn,SIGNAL(clicked()),this,SLOT(userConfirm()));
 
 
-    cancelBtn = new QPushButton(this);
-    cancelBtn->resize(width*27/100,height*7/100);
-    cancelBtn->move((width-cancelBtn->width())/2+width*21/100,height*77/100);
+    cancelBtn = new QPushButton(this);    
     cancelBtn->setText(root.firstChildElement("cancelBtn").text());
     cancelBtn->setObjectName("confirmBtn");
     connect(cancelBtn,SIGNAL(clicked()),this,SLOT(close()));
 
+    objectGeometry();
+
+
     getData();
 
+    __android_log_write(ANDROID_LOG_INFO,"call-------------->","First");
 
 
+}
+void UserManger::resizeEvent(QResizeEvent *event)
+{
+    QSize size = event->size();
+    width = size.width();
+    height = size.height();
 
+
+    //__android_log_write(ANDROID_LOG_INFO,"call-------------->","Here");
+
+    objectGeometry();
+}
+void UserManger::objectGeometry()
+{
+     titleLabel->setGeometry(0,height*11/100,width,height*6/100);
+
+     usernameLabel->resize(width*28/100,height*6/100);
+     usernameLabel->move((width-usernameLabel->width())/2-width*27/100,height*24/100);
+
+     passwordLabel->resize(width*29/100,height*6/100);
+     passwordLabel->move((width-passwordLabel->width())/2-width*27/100,height*37/100);
+
+     passwdEdit->resize(width*50/100,height*6/100);
+     passwdEdit->move((width-passwdEdit->width())/2+width*15/100,height*37/100);
+
+     user_control->resize(width*50/100,height*6/100);
+     user_control->move((width-user_control->width())/2+width*15/100,height*24/100);
+
+     explainLabel->setGeometry(0,height*48/100,width,height*11/100);
+
+     okBtn->resize(width*27/100,height*7/100);
+     okBtn->move((width-okBtn->width())/2-width*21/100,height*77/100);
+
+     cancelBtn->resize(width*27/100,height*7/100);
+     cancelBtn->move((width-cancelBtn->width())/2+width*21/100,height*77/100);
 }
 void UserManger::userConfirm()
 {

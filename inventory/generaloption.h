@@ -26,6 +26,8 @@ public:
     void interface();
     void batteryInfoShow(int batteryLevel,bool onCharge);
     void sysInfoShow(QString sysInfo);
+    void resizeEvent(QResizeEvent *event)override;
+    void objectGeometry();
 
 
 

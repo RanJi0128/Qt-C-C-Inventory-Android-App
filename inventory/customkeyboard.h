@@ -9,6 +9,9 @@ class CustomKeyBoard : public QDialog
 public:
     CustomKeyBoard(QWidget *parent = nullptr);
 
+    void resizeEvent(QResizeEvent *event);
+    void objectGeometry();
+
     QPushButton *alphabet[26];
     QPushButton *numeric[10];
     QPushButton *specNum;

@@ -41,6 +41,8 @@ public:
      explicit MainWindow(int dbState,QWidget *parent = nullptr);
     ~MainWindow();
 
+    void resizeEvent(QResizeEvent *event);
+
 public :
 
      QLabel *mainTitle;
@@ -102,7 +104,7 @@ public :
      void dataConfirm();
      void dbDataDelete(int tableNum);
      void downloadDataDel(QString,QString,QString,QString,QString,bool);
-
+     void objectGeometry();
      void appLogoff();
 
      struct SysInfo{

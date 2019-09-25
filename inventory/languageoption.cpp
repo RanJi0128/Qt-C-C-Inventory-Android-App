@@ -18,7 +18,19 @@ void LanguageOption::interface()
     pageTitle->setAlignment(Qt::AlignHCenter);
     pageTitle->setText(root.firstChildElement("pageTitle").text());
     pageTitle->setObjectName("title");
-    pageTitle->setGeometry(0,height*11/100,width,height*6/100);
 
+    objectGeometry();
+}
+void LanguageOption::resizeEvent(QResizeEvent *event)
+{
+    QSize size = event->size();
+    width = size.width();
+    height = size.height();
+
+    objectGeometry();
+}
+void LanguageOption::objectGeometry()
+{
+    pageTitle->setGeometry(0,height*11/100,width,height*6/100);
 
 }

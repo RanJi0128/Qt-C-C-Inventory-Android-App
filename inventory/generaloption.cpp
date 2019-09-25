@@ -19,39 +19,56 @@ void GeneralOption::interface()
     pageTitle->setAlignment(Qt::AlignHCenter);
     pageTitle->setText(root.firstChildElement("pageTitle").text());
     pageTitle->setObjectName("title");
-    pageTitle->setGeometry(0,height*11/100,width,height*6/100);
 
-    sysinfo = new QTextEdit(this);
-    sysinfo->resize(width*91/100,height*20/100);
-    sysinfo->move((width-sysinfo->width())/2,height*18/100);
+    sysinfo = new QTextEdit(this);    
     sysinfo->setReadOnly(1);
 
 
     batteryBar = new QProgressBar(this);
-    batteryBar->resize(width*86/100,height*3/100);
-    batteryBar->move((width-batteryBar->width())/2,height*46/100);
 
-
-    batteryLabel= new QLabel(this);
-    batteryLabel->resize(width*91/100,height*4/100);
-    batteryLabel->move((width-batteryLabel->width())/2,height*41/100);
+    batteryLabel= new QLabel(this);    
     batteryLabel->setObjectName("battery");
 
 
-    menuBtn = new QPushButton(this);
-    menuBtn->resize(width*27/100,height*7/100);
-    menuBtn->move((width-menuBtn->width())/2-width*25/100,height*69/100);
+    menuBtn = new QPushButton(this);    
     menuBtn->setText(root.firstChildElement("menuBtn").text());
     menuBtn->setObjectName("taskCtrlBtn");
     connect(menuBtn,SIGNAL(clicked()),this,SLOT(menuShow()));
 
-    networkBtn = new QPushButton(this);
-    networkBtn->resize(width*29/100,height*7/100);
-    networkBtn->move((width-networkBtn->width())/2+width*22/100,height*69/100);
+    networkBtn = new QPushButton(this);    
     networkBtn->setText(root.firstChildElement("networkBtn").text());
     networkBtn->setObjectName("taskCtrlBtn");
     connect(networkBtn,SIGNAL(clicked()),this,SLOT(openNetworkSetting()));
 
+    objectGeometry();
+
+
+}
+void GeneralOption::resizeEvent(QResizeEvent *event)
+{
+    QSize size = event->size();
+    width = size.width();
+    height = size.height();
+
+    objectGeometry();
+}
+void GeneralOption::objectGeometry()
+{
+    pageTitle->setGeometry(0,height*11/100,width,height*6/100);
+
+    sysinfo->resize(width*91/100,height*20/100);
+    sysinfo->move((width-sysinfo->width())/2,height*18/100);
+
+    batteryBar->resize(width*86/100,height*3/100);
+    batteryBar->move((width-batteryBar->width())/2,height*46/100);
+    batteryLabel->resize(width*91/100,height*4/100);
+    batteryLabel->move((width-batteryLabel->width())/2,height*41/100);
+
+    menuBtn->resize(width*27/100,height*7/100);
+    menuBtn->move((width-menuBtn->width())/2-width*25/100,height*69/100);
+
+    networkBtn->resize(width*29/100,height*7/100);
+    networkBtn->move((width-networkBtn->width())/2+width*22/100,height*69/100);
 
 
 }

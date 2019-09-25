@@ -17,7 +17,8 @@ public:
 
              bool insertData(QString phyStr, QString lctStr,QString sublctStr,int key);
              bool updateData(QString phyStr, QString lctStr,QString sublctStr,int key, QString pri_id);
-
+             void resizeEvent(QResizeEvent *event);
+             void objectGeometry();
 
     enum STATE{Create,Edit}State;
     QLabel* pageTitle;

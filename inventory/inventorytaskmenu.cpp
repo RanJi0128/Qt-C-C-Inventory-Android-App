@@ -24,15 +24,12 @@ void InventoryTaskMenu::interface()
     pageTitle->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     pageTitle->setAlignment(Qt::AlignHCenter);
     pageTitle->setText(root.firstChildElement("pageTitle").text());
-    pageTitle->setObjectName("title");
-    pageTitle->setGeometry(0,height*11/100,width,height*6/100);
+    pageTitle->setObjectName("title");    
 
     table.getReadAllData(userKey);
 
     taskMenu = new QTableView(this);
-    taskMenu->setModel(&table);
-    taskMenu->resize(width-30,height*70/100);
-    taskMenu->move((width-taskMenu->width())/2,pageTitle->y()+pageTitle->height()+15);
+    taskMenu->setModel(&table);    
     taskMenu->horizontalHeader()->setStretchLastSection(true);
     taskMenu->verticalHeader()->hide();
     taskMenu->setEditTriggers(QAbstractItemView::NoEditTriggers);
@@ -42,32 +39,24 @@ void InventoryTaskMenu::interface()
     taskMenu->setColumnWidth(0,taskMenu->width()/3);
     connect(taskMenu,SIGNAL(clicked(const QModelIndex &)),this,SLOT(rowSelected(const QModelIndex & )));
 
-    menuBtn = new QPushButton(this);
-    menuBtn->resize(width*19/100,height*6/100);
-    menuBtn->move((width-menuBtn->width())/2-width*38/100,height*90/100);
+    menuBtn = new QPushButton(this);    
     menuBtn->setText(root.firstChildElement("menuBtn").text());
     menuBtn->setObjectName("taskCtrlBtn");
     connect(menuBtn,SIGNAL(clicked()),this,SLOT(menuShow()));
 
-    deleteBtn = new QPushButton(this);
-    deleteBtn->resize(width*19/100,height*6/100);
-    deleteBtn->move((width-deleteBtn->width())/2-width*13/100,height*90/100);
+    deleteBtn = new QPushButton(this);    
     deleteBtn->setText(root.firstChildElement("deleteBtn").text());
     deleteBtn->setObjectName("taskCtrlBtn");
     deleteBtn->setEnabled(0);
     connect(deleteBtn,SIGNAL(clicked()),this,SLOT(deleteConfirm()));
 
-    editBtn = new QPushButton(this);
-    editBtn->resize(width*19/100,height*6/100);
-    editBtn->move((width-editBtn->width())/2+width*13/100,height*90/100);
+    editBtn = new QPushButton(this);    
     editBtn->setText(root.firstChildElement("edit").text());
     editBtn->setObjectName("taskCtrlBtn");
     editBtn->setEnabled(0);
     connect(editBtn,SIGNAL(clicked()),this,SLOT(editShow()));
 
-    createBtn = new QPushButton(this);
-    createBtn->resize(width*19/100,height*6/100);
-    createBtn->move((width-createBtn->width())/2+width*38/100,height*90/100);
+    createBtn = new QPushButton(this);    
     createBtn->setText(root.firstChildElement("create").text());
     createBtn->setObjectName("taskCtrlBtn");
     if(permission[0])
@@ -76,8 +65,38 @@ void InventoryTaskMenu::interface()
         createBtn->setEnabled(0);
     }
     connect(createBtn,SIGNAL(clicked()),this,SLOT(createShow()));
-}
 
+    objectGeometry();
+}
+void InventoryTaskMenu::resizeEvent(QResizeEvent *event)
+{
+    QSize size = event->size();
+    width = size.width();
+    height = size.height();
+
+    objectGeometry();
+}
+void InventoryTaskMenu::objectGeometry()
+{
+    pageTitle->setGeometry(0,height*11/100,width,height*6/100);
+
+    taskMenu->resize(width-30,height*70/100);
+    taskMenu->move((width-taskMenu->width())/2,pageTitle->y()+pageTitle->height()+15);
+
+    menuBtn->resize(width*19/100,height*6/100);
+    menuBtn->move((width-menuBtn->width())/2-width*38/100,height*90/100);
+
+    deleteBtn->resize(width*19/100,height*6/100);
+    deleteBtn->move((width-deleteBtn->width())/2-width*13/100,height*90/100);
+
+    editBtn->resize(width*19/100,height*6/100);
+    editBtn->move((width-editBtn->width())/2+width*13/100,height*90/100);
+
+    createBtn->resize(width*19/100,height*6/100);
+    createBtn->move((width-createBtn->width())/2+width*38/100,height*90/100);
+
+
+}
 void InventoryTaskMenu::menuShow()
 {
     this->close();

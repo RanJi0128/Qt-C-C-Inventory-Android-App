@@ -15,7 +15,8 @@ class Options : public QMainWindow
     Q_OBJECT
 public:
     explicit Options(QWidget *parent = nullptr);
-
+    void resizeEvent(QResizeEvent *event)override;
+    void objectGeometry();
     QTabWidget *optionTabs;
 
     AdvancedOption *advancedOption;
