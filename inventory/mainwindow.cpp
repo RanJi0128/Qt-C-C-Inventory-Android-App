@@ -178,10 +178,10 @@ void MainWindow::dbErrorShow()
 
    if(m_dbState==1)
      {
-        QMessageBox::warning(this,root.firstChildElement("dbErrorTilte").text(),root.firstChildElement("dbErrorText_1").text());
+        QMessageBox::warning(this,"Warning!","No Database!");
      }
     else if(m_dbState==2){
-        QMessageBox::warning(this,root.firstChildElement("dbErrorTilte").text(),root.firstChildElement("dbErrorText_2").text());
+        QMessageBox::warning(this,"Warning!","Can't Open Database!");
     }
     exit(0);
 
@@ -408,25 +408,26 @@ void MainWindow::downloadAllData(int index)
 
             filename = "shippingtask_"+QDateTime::currentDateTime().toString("yy_MM_dd_hh_mm_ss")+".csv";
             sharedFile+=filename;
-            outStream=shippingTable.getCSVData();
+            outStream=shippingTable.getCSVData(userKey);
 
             break;
         case 1:
 
             filename = "inventorytask_"+QDateTime::currentDateTime().toString("yy_MM_dd_hh_mm_ss")+".csv";
             sharedFile+=filename;
-            outStream=inventoryTable.getCSVData();
+            outStream=inventoryTable.getCSVData(userKey);
 
              break;
         case 2:
 
             filename = "consumptask_"+QDateTime::currentDateTime().toString("yy_MM_dd_hh_mm_ss")+".csv";
             sharedFile+=filename;
-            outStream=consumpTable.getCSVData();
+            outStream=consumpTable.getCSVData(userKey);
 
             break;
 
     }
+
 
     state = download(serverInfo.userName,serverInfo.password,serverInfo.ip_address,sharedFile,outStream);
     downloadConfirm(state,filename,task_control->itemText(index),outStream);
@@ -496,11 +497,28 @@ void MainWindow::deleteData(int flag)
         dbDataDelete(task_control->currentIndex());
         break;
     case 1:
+      {
         for(int i=0;i<3;i++)
         {
             dbDataDelete(i);
         }
+        if (QFile::exists("./inventory.db" ))
+        {
+            QFile::remove("./inventory.db");
+
+            QFile file("./log.txt");
+            QString out = "Database deleted: "+QDateTime::currentDateTime().toString();
+            if (file.open(QIODevice::ReadWrite) )
+            {
+                QTextStream stream(&file);
+                stream << out << endl;
+
+            }
+            file.close();
+
+        }
         break;
+      }
     case 2:
     {
         QString prefix;

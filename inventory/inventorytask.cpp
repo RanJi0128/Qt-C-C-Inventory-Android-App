@@ -99,8 +99,10 @@ void InventoryTableModel::getReadAllData(int key_id)
            QString physical = query.value(2).toString();
            QString location = query.value(3).toString();
            QString sub_location = query.value(4).toString();
+           QString c_time = query.value(5).toString();
+           QString m_time = query.value(6).toString();
 
-           table.append({pri_id,join_id,physical,location,sub_location});
+           table.append({pri_id,join_id,physical,location,sub_location,c_time,m_time});
 
        }
     
@@ -108,13 +110,14 @@ void InventoryTableModel::getReadAllData(int key_id)
     endInsertRows();
  
 }
-QString InventoryTableModel::getCSVData()
+QString InventoryTableModel::getCSVData(int key_id)
 {
+    getReadAllData(key_id);
     QString data=" ";
-    data="pri_id,key,physical,location,sub_location\n";
+    data="pri_id,key,physical,location,sub_location,c_time,m_time\n";
     for(int i=0;i<rowCount();i++)
     {
-        data = data + table.at(i).at(0)+","+table.at(i).at(1)+","+table.at(i).at(2)+","+table.at(i).at(3)+table.at(i).at(4)+"\n";
+        data = data + table.at(i).at(0)+","+table.at(i).at(1)+","+table.at(i).at(2)+","+table.at(i).at(3)+","+table.at(i).at(4)+","+table.at(i).at(5)+","+table.at(i).at(6)+"\n";
     }
     return data;
 

@@ -10,6 +10,12 @@ DataBase::~DataBase()
 }
 void DataBase::connectToDataBase()
 {
+    QFile file("./log.txt");
+    if(file.exists())
+    {
+        m_dbState = 1;
+        return;
+    }
     QFile dfile("assets:/db/" DATABASE_NAME);
 
     if(!dfile.exists()){

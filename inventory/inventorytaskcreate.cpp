@@ -212,12 +212,13 @@ bool InventoryTaskCreate::insertData(QString phyStr, QString lctStr,QString subl
        else {
          return false;
        }
-       query.prepare("INSERT INTO inventory (key, physical, location,sub_location,c_time) VALUES (:key, :physical, :location, :sub_location,:c_time)");
+       query.prepare("INSERT INTO inventory (key, physical, location,sub_location,c_time,m_time) VALUES (:key, :physical, :location, :sub_location,:c_time,:m_time)");
               query.bindValue(":key", key);
               query.bindValue(":physical", phyStr);
               query.bindValue(":location", lctStr);
               query.bindValue(":sub_location", sublctStr);
               query.bindValue(":c_time", QDateTime::currentDateTime().toString("MM_dd_hh_mm"));
+              query.bindValue(":m_time", QDateTime::currentDateTime().toString("MM_dd_hh_mm"));
               if(query.exec())
               {
                   return true;
@@ -233,13 +234,13 @@ bool InventoryTaskCreate::updateData(QString phyStr, QString lctStr,QString subl
 //      const char *c_str2 = ba.data();
 //    __android_log_write(ANDROID_LOG_INFO,"call-------------->",c_str2);
         QSqlQuery query;
-        query.prepare("UPDATE inventory SET key=:key, physical=:physical, location=:location, sub_location=:sub_location, c_time=:c_time WHERE pri_id=:pri_id");
+        query.prepare("UPDATE inventory SET key=:key, physical=:physical, location=:location, sub_location=:sub_location, m_time=:m_time WHERE pri_id=:pri_id");
         query.bindValue(":key", key);
         query.bindValue(":physical", phyStr);
         query.bindValue(":location", lctStr);
         query.bindValue(":sub_location", sublctStr);
         query.bindValue(":pri_id", pri_id.toInt());
-        query.bindValue(":c_time", QDateTime::currentDateTime().toString("MM_dd_hh_mm"));
+        query.bindValue(":m_time", QDateTime::currentDateTime().toString("MM_dd_hh_mm"));
 
         if(query.exec())
         {

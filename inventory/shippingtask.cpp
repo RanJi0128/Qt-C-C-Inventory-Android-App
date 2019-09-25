@@ -98,21 +98,24 @@ void ShippingTableModel::getReadAllData(int key_id)
            QString join_id = query.value(1).toString();
            QString order = query.value(2).toString();
            QString ship_val = query.value(3).toString();
-           
-           table.append({pri_id,join_id,order,ship_val});
+           QString c_time = query.value(4).toString();
+           QString m_time = query.value(5).toString();
+
+           table.append({pri_id,join_id,order,ship_val,c_time,m_time});
        }
     
     }
     endInsertRows();
  
 }
-QString ShippingTableModel::getCSVData()
+QString ShippingTableModel::getCSVData(int key_id)
 {
+    getReadAllData(key_id);
     QString data=" ";
-    data="pri_id,key,order_val,ship_val\n";
+    data="pri_id,key,order_val,ship_val,c_time,m_time\n";
     for(int i=0;i<rowCount();i++)
     {
-        data = data + table.at(i).at(0)+","+table.at(i).at(1)+","+table.at(i).at(2)+","+table.at(i).at(3)+"\n";
+        data = data + table.at(i).at(0)+","+table.at(i).at(1)+","+table.at(i).at(2)+","+table.at(i).at(3)+","+table.at(i).at(4)+","+table.at(i).at(5)+"\n";
     }
     return data;
 

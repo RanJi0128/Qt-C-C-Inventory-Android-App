@@ -162,11 +162,12 @@ bool ShippingTaskCreate::insertData(QString oderStr, QString shipStr,int key)
        else {
          return false;
        }
-       query.prepare("INSERT INTO shipping (key, order_val, ship_val, c_time) VALUES (:key, :order_val, :ship_val, :c_time)");
+       query.prepare("INSERT INTO shipping (key, order_val, ship_val, c_time, m_time) VALUES (:key, :order_val, :ship_val, :c_time, :m_time)");
        query.bindValue(":key", key);
        query.bindValue(":order_val", oderStr);
        query.bindValue(":ship_val", shipStr);
        query.bindValue(":c_time", QDateTime::currentDateTime().toString("MM_dd_hh_mm"));
+       query.bindValue(":m_time", QDateTime::currentDateTime().toString("MM_dd_hh_mm"));
        if(query.exec())
        {
            return true;
@@ -180,12 +181,12 @@ bool ShippingTaskCreate::updateData(QString oderStr, QString shipStr, int key, Q
 //      const char *c_str2 = ba.data();
 //    __android_log_write(ANDROID_LOG_INFO,"call-------------->",c_str2);
         QSqlQuery query;
-        query.prepare("UPDATE shipping SET key=:key, order_val=:order_val, ship_val=:ship_val, c_time=:c_time WHERE pri_id=:pri_id");
+        query.prepare("UPDATE shipping SET key=:key, order_val=:order_val, ship_val=:ship_val, m_time=:m_time WHERE pri_id=:pri_id");
         query.bindValue(":key", key);
         query.bindValue(":order_val", oderStr);
         query.bindValue(":ship_val", shipStr);
         query.bindValue(":pri_id", pri_id.toInt());
-        query.bindValue(":c_time", QDateTime::currentDateTime().toString("MM_dd_hh_mm"));
+        query.bindValue(":m_time", QDateTime::currentDateTime().toString("MM_dd_hh_mm"));
 
         if(query.exec())
         {
